@@ -13,3 +13,7 @@ Quizzer is a lightweight web-based quiz application designed to help users test 
 ## Additional information
 
 This project is developed as part of the "Introduction to software development projects" course. Contributions follow agile methodologies and GitHub flow practices.
+
+## Product Backlog
+
+[Link](https://github.com/orgs/Triplatuomas-Co/projects/1/views/1)
