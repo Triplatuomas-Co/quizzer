@@ -21,6 +21,7 @@ public class Teacher {
     private String firstName;
     private String lastName;
     private Date dateOfBirth;
+    private String username; // Added for authentication
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher")
     private List<Quiz> quizzes;
@@ -35,9 +36,23 @@ public class Teacher {
         this.dateOfBirth = dateOfBirth;
         this.quizzes = new ArrayList<>();
     }
+    
+    // Special constructor for template teacher with ID 0
+    public Teacher(Long id, String firstName, String lastName, String username) {
+        this.teacher_id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.quizzes = new ArrayList<>();
+    }
 
     public Long getTeacher_id() {
         return teacher_id;
+    }
+    
+    // Added setter for teacher_id for the template teacher
+    public void setTeacher_id(Long teacher_id) {
+        this.teacher_id = teacher_id;
     }
 
     public String getFirstName() {
@@ -63,6 +78,15 @@ public class Teacher {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+    
+    // Getters and setters for username
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public List<Quiz> getQuizzes() {
         return quizzes;
@@ -75,6 +99,6 @@ public class Teacher {
     @Override
     public String toString() {
         return "Teacher [teacher_id=" + teacher_id + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", dateOfBirth=" + dateOfBirth + ", quizzes=" + quizzes + "]";
+                + ", dateOfBirth=" + dateOfBirth + ", username=" + username + ", quizzes=" + quizzes + "]";
     }
 }

@@ -29,6 +29,7 @@ class QuizzerApplicationTests {
 	void testTeacherWithQuizAndQuestion() {
 		// Luodaan opettaja
 		Teacher teacher = new Teacher("John", "Doe", new java.sql.Date(System.currentTimeMillis()));
+		teacher.setUsername("john_doe");
 
 		// Luodaan quiz ja liitetään se opettajaan
 		Quiz quiz = new Quiz("Category 1", teacher, 1, "Quiz Title", "Quiz Description", false);
@@ -48,8 +49,9 @@ class QuizzerApplicationTests {
 
 		// Haetaan opettaja tietokannasta ja varmistetaan, että kaikki liittyvät tiedot
 		// tallentuivat
-		Teacher savedTeacher = teacherRepository.findAll().get(0);
+		Teacher savedTeacher = teacherRepository.findAll().get(1); // <-- Kannassa saattaa olla Template opettaja, joten käytetään indeksiä 1
 		assertEquals("John", savedTeacher.getFirstName());
+		assertEquals("john_doe", savedTeacher.getUsername());
 		assertEquals(1, savedTeacher.getQuizzes().size());
 		assertEquals("Quiz Title", savedTeacher.getQuizzes().get(0).getTitle());
 		assertEquals(1, savedTeacher.getQuizzes().get(0).getQuestions().size());
