@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Quiz</title>
+</head>
+<body>
+    <h2>Add New Quiz</h2>
+
+    <form th:action="@{/quiz/save}" th:object="${quiz}" method="post">
+        <label>Title:</label><br/>
+        <input type="text" th:field="*{title}" required /><br/><br/>
+
+        <label>Description:</label><br/>
+        <textarea th:field="*{description}" rows="3" cols="50"></textarea><br/><br/>
+
+        <label>Category:</label><br/>
+        <input type="text" th:field="*{category}" /><br/><br/>
+
+        <label>Difficulty (1–5):</label><br/>
+        <input type="number" th:field="*{dificulty}" min="1" max="5" /><br/><br/>
+
+        <button type="submit">Save Quiz</button>
+    </form>
+</body>
+</html>
+
+<!-- This HTML file is used to create a form for adding a new quiz. It uses Thymeleaf for 
+ -->

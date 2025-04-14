@@ -6,17 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import com.haagahelia.quizzer.domain.Quiz;
-import com.haagahelia.quizzer.domain.Question;
 import com.haagahelia.quizzer.domain.Option;
+import com.haagahelia.quizzer.domain.Question;
+import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Teacher;
-import com.haagahelia.quizzer.repository.QuizRepository;
-import com.haagahelia.quizzer.repository.QuestionRepository;
 import com.haagahelia.quizzer.repository.OptionRepository;
+import com.haagahelia.quizzer.repository.QuestionRepository;
+import com.haagahelia.quizzer.repository.QuizRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -113,4 +113,54 @@ public class QuizController {
         }
         return "redirect:/quiz/list";
     }
+
+    @GetMapping("/")
+    // Show the index page with a list of quizzes for the template teacher.
+    public String index(Model model) {
+        Teacher teacher = getTemplateTeacher();
+        model.addAttribute("quizzes", quizRepository.findByTeacher(teacher));
+        return "index";
+    }
+
+    @GetMapping("/quiz/add")
+    // Show the form to add a new quiz
+    public String showAddQuizForm(Model model) {
+        model.addAttribute("quiz", new Quiz());
+        return "addquiz";
+    }
+
+    @PostMapping("/quiz/save")
+    // Process the form data to save a new quiz
+    public String saveQuiz(@ModelAttribute Quiz quiz) {
+        if (quiz.getTeacher() == null) {
+            quiz.setTeacher(getTemplateTeacher());
+        }
+        quizRepository.save(quiz);
+        return "redirect:/";
+    }
+
+    @GetMapping("/quiz/{id}/addquestion")
+    // Show the form to add a new question to a quiz
+    public String showAddQuestionForm(@PathVariable Long id, Model model) {
+        Optional<Quiz> quizOpt = quizRepository.findById(id);
+        if (quizOpt.isPresent()) {
+            Question question = new Question();
+            question.setQuiz(quizOpt.get());
+            model.addAttribute("question", question);
+            return "addquestion";
+        }
+        return "redirect:/quiz/list";
+    }
+
+    @PostMapping("/quiz/{id}/savequestion")
+    // Process the form data to save a new question to a quiz
+    public String saveQuestion(@PathVariable Long id, @ModelAttribute Question question) {
+        Optional<Quiz> quizOpt = quizRepository.findById(id);
+        if (quizOpt.isPresent()) {
+            question.setQuiz(quizOpt.get());
+            questionRepository.save(question);
+        }
+        return "redirect:/quiz/view/" + id;
+    }
+
 }

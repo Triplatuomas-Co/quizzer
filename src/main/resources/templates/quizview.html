@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quiz Details</title>
+</head>
+<body>
+    <h1 th:text="${quiz.title}">Quiz Title</h1>
+
+    <p><strong>Description:</strong> <span th:text="${quiz.description}">Quiz description</span></p>
+    <p><strong>Category:</strong> <span th:text="${quiz.category}">Category</span></p>
+    <p><strong>Difficulty:</strong> <span th:text="${quiz.dificulty}">Difficulty</span></p>
+
+    <h2>Questions</h2>
+    <ul>
+        <li th:each="question : ${quiz.questions}">
+            <p>
+                <strong th:text="${question.title}">Question Title</strong><br/>
+                <span th:text="${question.description}">Question Description</span>
+            </p>
+        </li>
+    </ul>
+
+    <p>
+        <a th:href="@{'/quiz/' + ${quiz.quiz_id} + '/addquestion'}">+ Add Question</a> |
+        <a th:href="@{/}">← Back to Home</a>
+    </p>
+</body>
+</html>
+<!-- This HTML file is used to display the details of a specific quiz, including its title, 
+     description, category, difficulty, and a list of questions. It also provides links to add 
+     a new question and return to the home page. 
+ -->

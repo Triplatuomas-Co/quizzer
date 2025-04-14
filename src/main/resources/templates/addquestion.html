@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Question</title>
+</head>
+<body>
+<h2>Add a New Question</h2>
+
+<form th:action="@{'/quiz/' + ${question.quiz.quiz_id} + '/savequestion'}"
+      th:object="${question}" method="post">
+
+    <label>Title:</label><br/>
+    <input type="text" th:field="*{title}" required /><br/><br/>
+
+    <label>Description:</label><br/>
+    <textarea th:field="*{description}" rows="5" cols="40"></textarea><br/><br/>
+
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>
+
+<!-- This HTML file is used to create a form for adding a new question to a quiz. 
+     It uses Thymeleaf for server-side rendering and binds the form fields to the 
+     properties of the 'question' object passed from the controller. The form submits 
+     to a URL that includes the quiz ID, allowing the backend to process the new 
+     question accordingly. -->

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quizzer</title>
+</head>
+<body>
+    <h1>Welcome to Quizzer</h1>
+
+    <a th:href="@{/quiz/add}">
+        <button>Add New Quiz</button>
+    </a>
+
+    <h2>Your Quizzes</h2>
+    <ul>
+        <li th:each="quiz : ${quizzes}">
+            <span th:text="${quiz.title}">Quiz title</span> —
+            <a th:href="@{'/quiz/view/' + ${quiz.quiz_id}}">View</a> |
+            <a th:href="@{'/quiz/' + ${quiz.quiz_id} + '/addquestion'}">Add Question</a>
+        </li>
+    </ul>
+</body>
+</html>
+<!-- This HTML file serves as the main page for the Quizzer application. It displays a 
+     list of quizzes with options to view and add questions, and a button to add a new quiz. -->
