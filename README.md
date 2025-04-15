@@ -22,6 +22,8 @@ This project is developed as part of the "Introduction to software development p
 
 ## Frontend
 
+Node version 22.13.0
+
 **MacOS & Windows**  
 Terminal commands:
 ```bash
@@ -31,6 +33,8 @@ npm run dev
 ```
 
 ## Backend
+
+Java version 17.0.12
 
 **MacOS**  
 Terminal commands:
