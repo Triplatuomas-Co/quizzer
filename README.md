@@ -17,3 +17,26 @@ This project is developed as part of the "Introduction to software development p
 ## Product Backlog
 
 [Link](https://github.com/orgs/Triplatuomas-Co/projects/1/views/1)
+
+## User Instructions
+
+## Frontend:
+
+MacOS & Windows
+Terminal komennot:
+
+cd frontend
+npm install
+npm run dev
+
+## Backend:
+
+MacOS
+Terminal komennot:
+cd quizzer
+./mvnw spring-boot:run
+
+Windows
+Terminal komennot:
+cd quizzer
+mvnw.cmd spring-boot:run
