@@ -22,7 +22,7 @@ public class Question {
     private String title;
     private String description;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
     private List<Option> options;
     @ManyToOne
     @JoinColumn(name = "quiz_id")

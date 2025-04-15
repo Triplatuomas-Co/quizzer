@@ -21,6 +21,8 @@ import com.haagahelia.quizzer.repository.TeacherRepository;
 
 import jakarta.annotation.PostConstruct;
 
+
+
 @Controller
 public class QuizController {
 
@@ -140,27 +142,52 @@ public class QuizController {
     }
 
     @GetMapping("/quiz/{id}/addquestion")
-    // Show the form to add a new question to a quiz
+    // Show the form to add a new question to a specific quiz
     public String showAddQuestionForm(@PathVariable Long id, Model model) {
-        Optional<Quiz> quizOpt = quizRepository.findById(id);
-        if (quizOpt.isPresent()) {
-            Question question = new Question();
-            question.setQuiz(quizOpt.get());
-            model.addAttribute("question", question);
-            return "addquestion";
-        }
-        return "redirect:/quiz/list";
+        Quiz quiz = quizRepository.findById(id).orElseThrow();
+        Question question = new Question();
+        question.setQuiz(quiz);
+        model.addAttribute("question", question);
+        return "addquestion";
     }
 
     @PostMapping("/quiz/{id}/savequestion")
-    // Process the form data to save a new question to a quiz
+    // Process the form data to save a new question to a specific quiz
     public String saveQuestion(@PathVariable Long id, @ModelAttribute Question question) {
-        Optional<Quiz> quizOpt = quizRepository.findById(id);
-        if (quizOpt.isPresent()) {
-            question.setQuiz(quizOpt.get());
-            questionRepository.save(question);
-        }
+        Quiz quiz = quizRepository.findById(id).orElseThrow(); 
+        question.setQuiz(quiz);
+        question.getOptions().forEach(option -> option.setQuestion(question));
+        questionRepository.save(question);
         return "redirect:/quiz/view/" + id;
+    }
+
+    @GetMapping("/question/{id}/edit")
+    // Show the form to edit an existing question
+    public String editQuestion(@PathVariable Long id, Model model) {
+        Question question = questionRepository.findById(id).orElseThrow();
+        model.addAttribute("question", question);
+        return "editquestion";
+    }
+
+    @PostMapping("/question/{id}/update")
+    // Process the form data to update an existing question
+    public String updateQuestion(@PathVariable Long id, @ModelAttribute Question question) {
+        Question existingQuestion = questionRepository.findById(id).orElseThrow();
+        
+        // Set the quiz back-reference to the existing question
+        existingQuestion.setTitle(question.getTitle());
+        existingQuestion.setDescription(question.getDescription());
+        existingQuestion.getOptions().clear();
+    
+        // Set the options for the existing question
+        question.getOptions().forEach(option -> {
+            option.setQuestion(existingQuestion);
+            existingQuestion.getOptions().add(option);
+        });
+    
+        // Save the updated question
+        questionRepository.save(existingQuestion);
+        return "redirect:/quiz/view/" + existingQuestion.getQuiz().getQuiz_id();
     }
 
 }

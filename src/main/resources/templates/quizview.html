@@ -15,7 +15,13 @@
         <li th:each="question : ${quiz.questions}">
             <p>
                 <strong th:text="${question.title}">Question Title</strong><br/>
-                <span th:text="${question.description}">Question Description</span>
+                <ul>
+                    <li th:each="option : ${question.options}">
+                        <span th:text="${option.text}">Option Text</span>
+                        <span th:if="${option.iscorrect}" style="color: green;">(Correct)</span>
+                    </li>
+                </ul>
+                <a th:href="@{'/question/' + ${question.question_id} + '/edit'}"> Edit Question</a>
             </p>
         </li>
     </ul>
