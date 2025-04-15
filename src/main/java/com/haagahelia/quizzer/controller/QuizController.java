@@ -218,4 +218,28 @@ public class QuizController {
         return "redirect:/quiz/view/" + existingQuestion.getQuiz().getQuiz_id();
     }
 
+    @GetMapping("/quiz/delete/{id}")
+    // Show the confirmation page for deleting a quiz
+    public String showDeleteConfirmation(@PathVariable Long id, Model model) {
+        try {
+            Quiz quiz = quizRepository.findById(id).orElseThrow();
+            model.addAttribute("quiz", quiz);
+            return "deletequiz";
+        } catch (Exception e) {
+            return "redirect:/quiz/list";
+        }
+    }
+
+    @PostMapping("/quiz/delete/{id}")
+    // Process the deletion of a quiz
+    public String deleteQuiz(@PathVariable Long id) {
+        try {
+            Quiz quiz = quizRepository.findById(id).orElseThrow();
+            quizRepository.delete(quiz);
+        } catch (Exception e) {
+            // Quiz not found, just redirect
+        }
+        return "redirect:/quiz/list";
+    }
+
 }
