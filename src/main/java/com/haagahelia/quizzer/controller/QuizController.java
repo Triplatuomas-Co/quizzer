@@ -174,4 +174,21 @@ public class QuizController {
         return "redirect:/quiz/list";
     }
 
+    @PostMapping("/quiz/update/{id}")
+    // Process the form data to update an existing quiz
+    public String updateQuiz(@PathVariable Long id, @ModelAttribute Quiz quiz) {
+        Optional<Quiz> existingQuizOpt = quizRepository.findById(id);
+        if (existingQuizOpt.isPresent()) {
+            Quiz existingQuiz = existingQuizOpt.get();
+            
+            // Update basic quiz information
+            existingQuiz.setTitle(quiz.getTitle());
+            existingQuiz.setDescription(quiz.getDescription());
+            
+            // Save the updated quiz
+            quizRepository.save(existingQuiz);
+        }
+        return "redirect:/quiz/list";
+    }
+
 }
