@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add Question</title>
+    <title>Edit Question</title>
 </head>
 <body>
-<h2>Add a New Question</h2>
+<h2>Edit Question</h2>
 
-<form th:action="@{'/quiz/' + ${question.quiz.quiz_id} + '/savequestion'}"
-      th:object="${question}" method="post">
-
-    <label>Question:</label><br/>
+<form th:action="@{'/question/' + ${question.question_id} + '/update'}" th:object="${question}" method="post">
+    <label>Title:</label><br/>
     <input type="text" th:field="*{title}" required /><br/><br/>
 
     <label>Options:</label><br/>
-    <ul>
+    <ul id="options-list">
         <li th:each="option, iterStat : *{options}">
             <input type="text" th:field="*{options[__${iterStat.index}__].text}" required />
             <input type="checkbox" th:field="*{options[__${iterStat.index}__].iscorrect}" /> Correct<br/><br/>
@@ -21,17 +19,17 @@
     </ul>
     <button type="button" onclick="addOption()">+ Add Option</button><br/><br/>
 
-    <button type="submit">Save</button>
+    <button type="submit">Save Changes</button>
 </form>
 
 <script>
-    let optionIndex = 0;
+    let optionIndex = document.querySelectorAll('#options-list li').length;
 
     function addOption() {
-        const ul = document.querySelector('ul');
+        const ul = document.getElementById('options-list');
         const li = document.createElement('li');
         li.innerHTML = `
-            <input type="text" name="options[${optionIndex}].text" required />
+            <input type="text" name="options[${optionIndex}].text" placeholder="Option text" required />
             <input type="checkbox" name="options[${optionIndex}].iscorrect" /> Correct<br/><br/>
         `;
         ul.appendChild(li);
@@ -39,10 +37,13 @@
     }
 </script>
 
+<p><a th:href="@{'/quiz/view/' + ${question.quiz.quiz_id}}">← Back to Quiz</a></p>
 </body>
 </html>
 
-<!-- This page allows the user to add a new question to a quiz. 
-     It binds form fields to the 'question' object using Thymeleaf, and submits the form 
-     to save the new question and its options to the backend. -->
+<!--
+This page allows the user to edit a question and its answer options.
+The form is bound to the 'question' object and sends updates to the backend.
+User can also dynamically add more options using JavaScript.
+-->
 
