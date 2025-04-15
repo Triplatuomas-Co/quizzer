@@ -163,4 +163,15 @@ public class QuizController {
         return "redirect:/quiz/view/" + id;
     }
 
+    @GetMapping("/quiz/edit/{id}")
+    // Show the form to edit an existing quiz
+    public String showEditQuizForm(@PathVariable Long id, Model model) {
+        Optional<Quiz> quizOpt = quizRepository.findById(id);
+        if (quizOpt.isPresent()) {
+            model.addAttribute("quiz", quizOpt.get());
+            return "editquiz";
+        }
+        return "redirect:/quiz/list";
+    }
+
 }
