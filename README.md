@@ -20,23 +20,28 @@ This project is developed as part of the "Introduction to software development p
 
 ## User Instructions
 
-## Frontend:
+## Frontend
 
-MacOS & Windows
-Terminal komennot:
-
+**MacOS & Windows**  
+Terminal commands:
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
-## Backend:
+## Backend
 
-MacOS
-Terminal komennot:
+**MacOS**  
+Terminal commands:
+```bash
 cd quizzer
 ./mvnw spring-boot:run
+```
 
-Windows
-Terminal komennot:
+**Windows**  
+Terminal commands:
+```cmd
 cd quizzer
 mvnw.cmd spring-boot:run
+```
