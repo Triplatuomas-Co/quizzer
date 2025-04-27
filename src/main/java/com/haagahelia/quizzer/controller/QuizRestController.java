@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,13 @@ import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Question;
 import com.haagahelia.quizzer.domain.Option;
 import com.haagahelia.quizzer.domain.Teacher;
+import com.haagahelia.quizzer.dto.QuizDto;
 import com.haagahelia.quizzer.repository.QuizRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
+import com.haagahelia.quizzer.service.QuizService;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/quiz") // Base URL for the Quiz API
@@ -22,6 +26,7 @@ public class QuizRestController {
 
     private final QuizRepository quizRepository;
     private final TeacherRepository teacherRepository;
+    private final QuizService quizService;
     
     // Constants for the template teacher for testing purposes.
     private static final String TEMPLATE_TEACHER_USERNAME = "template_teacher";
@@ -29,10 +34,10 @@ public class QuizRestController {
     private static final String TEMPLATE_TEACHER_LASTNAME = "Teacher";
 
     @Autowired
-    public QuizRestController(QuizRepository quizRepository, 
-                              TeacherRepository teacherRepository) {
+    public QuizRestController(QuizRepository quizRepository, TeacherRepository teacherRepository, QuizService quizService) {
         this.quizRepository = quizRepository;
         this.teacherRepository = teacherRepository;
+        this.quizService = quizService;
     }
     
     // Initialize the template teacher.
@@ -83,23 +88,15 @@ public class QuizRestController {
     //         }
     //     ]
     // }
+
+    // Create a new quiz with questions and options.
+
     @PostMapping
-    public Quiz createQuiz(@RequestBody Quiz quiz) {
-        if (quiz.getTeacher() == null) {
-            quiz.setTeacher(getTemplateTeacher());
-        }
-        if (quiz.getQuestions() != null) {
-            for (Question question : quiz.getQuestions()) {
-                question.setQuiz(quiz);
-                if (question.getOptions() != null) {
-                    for (Option option : question.getOptions()) {
-                        option.setQuestion(question);
-                    }
-                }
-            }
-        }
-        return quizRepository.save(quiz);
+    public ResponseEntity<QuizDto> createQuiz(@Valid @RequestBody QuizDto quizDto) {
+        QuizDto created = quizService.createQuiz(quizDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+
     
     // **** READ ****
     // Returns the list of all quizzes for the template teacher.
