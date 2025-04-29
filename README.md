@@ -73,25 +73,34 @@ erDiagram
     QUESTION ||--o{ OPTION : has
 
     TEACHER {
-        Long id
-        String name
-        String email
+        Long teacher_id
+        String firstName
+        String lastName
+        Date dateOfBirth
+        String username
     }
 
     QUIZ {
-        Long id
+        Long quiz_id
+        String category
+        int dificulty
         String title
         String description
+        boolean ispublished
+        Long teacher_id
     }
 
     QUESTION {
-        Long id
-        String text
+        Long question_id
+        String title
+        String description
+        Long quiz_id
     }
 
     OPTION {
-        Long id
+        Long option_id
         String text
-        boolean isCorrect
+        boolean iscorrect
+        Long question_id
     }
 ```
