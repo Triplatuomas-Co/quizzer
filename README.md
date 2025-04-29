@@ -64,3 +64,34 @@ cd quizzer
 ```cmd
 mvnw.cmd spring-boot:run
 ```
+
+## Entity Relationship Diagram
+```mermaid
+erDiagram
+    TEACHER ||--o{ QUIZ : creates
+    QUIZ ||--o{ QUESTION : contains
+    QUESTION ||--o{ OPTION : has
+
+    TEACHER {
+        Long id
+        String name
+        String email
+    }
+
+    QUIZ {
+        Long id
+        String title
+        String description
+    }
+
+    QUESTION {
+        Long id
+        String text
+    }
+
+    OPTION {
+        Long id
+        String text
+        boolean isCorrect
+    }
+```
