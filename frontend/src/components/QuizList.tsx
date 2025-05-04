@@ -13,7 +13,7 @@ const QuizList: React.FC = () => {
 
   useEffect(() => {
     // Fetch quizzes from the backend API
-    fetch('http://localhost:8080/api/quiz/list')
+    fetch("http://localhost:8080/api/quiz/list")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch quizzes");
