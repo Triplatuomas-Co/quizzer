@@ -6,11 +6,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.haagahelia.quizzer.domain.Quiz;
-import com.haagahelia.quizzer.domain.Question;
-import com.haagahelia.quizzer.domain.Option;
 import com.haagahelia.quizzer.domain.Teacher;
 import com.haagahelia.quizzer.dto.QuizDto;
 import com.haagahelia.quizzer.repository.QuizRepository;
@@ -20,6 +24,8 @@ import com.haagahelia.quizzer.service.QuizService;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "http://localhost:5173") // Allow requests from frontend
+// This annotation is used to enable CORS (Cross-Origin Resource Sharing) for the specified origin.
 @RestController
 @RequestMapping("/api/quiz") // Base URL for the Quiz API
 public class QuizRestController {
