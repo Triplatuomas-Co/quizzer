@@ -2,7 +2,6 @@ package com.haagahelia.quizzer.controller;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +20,6 @@ import com.haagahelia.quizzer.repository.TeacherRepository;
 
 import jakarta.annotation.PostConstruct;
 
-
-
 @Controller
 public class QuizController {
 
@@ -30,24 +27,23 @@ public class QuizController {
     private final TeacherRepository teacherRepository;
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
-    
+
     // Constants for the template teacher
     // Should be removed once Spring Security is implemented
     private static final String TEMPLATE_TEACHER_USERNAME = "template_teacher";
     private static final String TEMPLATE_TEACHER_FIRSTNAME = "Template";
     private static final String TEMPLATE_TEACHER_LASTNAME = "Teacher";
 
-    @Autowired
-    public QuizController(QuizRepository quizRepository, 
-                          TeacherRepository teacherRepository,
-                          QuestionRepository questionRepository,
-                          OptionRepository optionRepository) {
+    public QuizController(QuizRepository quizRepository,
+            TeacherRepository teacherRepository,
+            QuestionRepository questionRepository,
+            OptionRepository optionRepository) {
         this.quizRepository = quizRepository;
         this.teacherRepository = teacherRepository;
         this.questionRepository = questionRepository;
         this.optionRepository = optionRepository;
     }
-    
+
     // Initialize the template teacher after the controller is constructed.
     // THIS IS FOR TESTING PURPOSES ONLY AND SHOULD BE REMOVED IN PRODUCTION.
     @PostConstruct
@@ -61,7 +57,7 @@ public class QuizController {
             teacherRepository.save(templateTeacher);
         }
     }
-    
+
     // Helper method to get the template teacher by username.
     // THIS IS FOR TESTING PURPOSES ONLY AND SHOULD BE REMOVED IN PRODUCTION.
     private Teacher getTemplateTeacher() {
@@ -71,7 +67,7 @@ public class QuizController {
         }
         return teacher;
     }
-    
+
     // **** CREATE ****
     // Process form data to add a new quiz with questions and options all at once.
     @PostMapping("/addquiz")
@@ -80,7 +76,7 @@ public class QuizController {
         if (quiz.getTeacher() == null) {
             quiz.setTeacher(getTemplateTeacher());
         }
-        
+
         // For each question in the quiz, set the back-reference to the quiz.
         if (quiz.getQuestions() != null) {
             for (Question question : quiz.getQuestions()) {
@@ -96,7 +92,7 @@ public class QuizController {
         quizRepository.save(quiz);
         return "redirect:/quiz/list";
     }
-    
+
     // List all quizzes for the template teacher.
     @GetMapping("/quiz/list")
     public String quizList(Model model) {
@@ -104,7 +100,7 @@ public class QuizController {
         model.addAttribute("quizzes", quizRepository.findByTeacher(teacher));
         return "quizlist";
     }
-    
+
     // View a specific quiz (including questions and options)
     @GetMapping("/quiz/view/{id}")
     public String viewQuiz(Model model, @PathVariable Long id) {
@@ -154,7 +150,7 @@ public class QuizController {
     @PostMapping("/quiz/{id}/savequestion")
     // Process the form data to save a new question to a specific quiz
     public String saveQuestion(@PathVariable Long id, @ModelAttribute Question question) {
-        Quiz quiz = quizRepository.findById(id).orElseThrow(); 
+        Quiz quiz = quizRepository.findById(id).orElseThrow();
         question.setQuiz(quiz);
         question.getOptions().forEach(option -> option.setQuestion(question));
         questionRepository.save(question);
@@ -178,11 +174,11 @@ public class QuizController {
         Optional<Quiz> existingQuizOpt = quizRepository.findById(id);
         if (existingQuizOpt.isPresent()) {
             Quiz existingQuiz = existingQuizOpt.get();
-            
+
             // Update basic quiz information
             existingQuiz.setTitle(quiz.getTitle());
             existingQuiz.setDescription(quiz.getDescription());
-            
+
             // Save the updated quiz
             quizRepository.save(existingQuiz);
         }
@@ -201,18 +197,18 @@ public class QuizController {
     // Process the form data to update an existing question
     public String updateQuestion(@PathVariable Long id, @ModelAttribute Question question) {
         Question existingQuestion = questionRepository.findById(id).orElseThrow();
-        
+
         // Set the quiz back-reference to the existing question
         existingQuestion.setTitle(question.getTitle());
         existingQuestion.setDescription(question.getDescription());
         existingQuestion.getOptions().clear();
-    
+
         // Set the options for the existing question
         question.getOptions().forEach(option -> {
             option.setQuestion(existingQuestion);
             existingQuestion.getOptions().add(option);
         });
-    
+
         // Save the updated question
         questionRepository.save(existingQuestion);
         return "redirect:/quiz/view/" + existingQuestion.getQuiz().getQuiz_id();

@@ -2,8 +2,8 @@ package com.haagahelia.quizzer.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Locale.Category;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,11 +21,14 @@ import com.haagahelia.quizzer.repository.QuizRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
 import com.haagahelia.quizzer.service.QuizService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "http://localhost:5173") // Allow requests from frontend
-// This annotation is used to enable CORS (Cross-Origin Resource Sharing) for the specified origin.
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/quiz") // Base URL for the Quiz API
 public class QuizRestController {
@@ -33,19 +36,19 @@ public class QuizRestController {
     private final QuizRepository quizRepository;
     private final TeacherRepository teacherRepository;
     private final QuizService quizService;
-    
+
     // Constants for the template teacher for testing purposes.
     private static final String TEMPLATE_TEACHER_USERNAME = "template_teacher";
     private static final String TEMPLATE_TEACHER_FIRSTNAME = "Template";
     private static final String TEMPLATE_TEACHER_LASTNAME = "Teacher";
 
-    @Autowired
-    public QuizRestController(QuizRepository quizRepository, TeacherRepository teacherRepository, QuizService quizService) {
+    public QuizRestController(QuizRepository quizRepository, TeacherRepository teacherRepository,
+            QuizService quizService) {
         this.quizRepository = quizRepository;
         this.teacherRepository = teacherRepository;
         this.quizService = quizService;
     }
-    
+
     // Initialize the template teacher.
     @PostConstruct
     public void initTemplateTeacher() {
@@ -57,7 +60,7 @@ public class QuizRestController {
             teacherRepository.save(templateTeacher);
         }
     }
-    
+
     // Helper method to retrieve the template teacher.
     private Teacher getTemplateTeacher() {
         Teacher teacher = teacherRepository.findByUsername(TEMPLATE_TEACHER_USERNAME);
@@ -66,59 +69,96 @@ public class QuizRestController {
         }
         return teacher;
     }
-    
+
     // **** CREATE ****
     // Accepts a JSON payload to add a new Quiz with nested questions and options.
     // POST http://localhost:8080/api/quiz
     // Example JSON payload:
     // {
-    //     "category": "General",
-    //     "dificulty": 1,
-    //     "title": "Sample Quiz",
-    //     "description": "This quiz tests basic Java concepts.",
-    //     "ispublished": false,
-    //     "questions": [
-    //         {
-    //         "title": "What is Java?",
-    //         "description": "Select the correct answer.",
-    //         "options": [
-    //             {
-    //             "text": "Programming Language",
-    //             "iscorrect": true
-    //             },
-    //             {
-    //             "text": "A type of coffee",
-    //             "iscorrect": false
-    //             }
-    //         ]
-    //         }
-    //     ]
+    // "category": "General",
+    // "dificulty": 1,
+    // "title": "Sample Quiz",
+    // "description": "This quiz tests basic Java concepts.",
+    // "ispublished": false,
+    // "questions": [
+    // {
+    // "title": "What is Java?",
+    // "description": "Select the correct answer.",
+    // "options": [
+    // {
+    // "text": "Programming Language",
+    // "iscorrect": true
+    // },
+    // {
+    // "text": "A type of coffee",
+    // "iscorrect": false
+    // }
+    // ]
+    // }
+    // ]
     // }
 
-    // Create a new quiz with questions and options.
-
+    @Tag(name = "Quizzes", description = "Operations related to quizzes")
+    @Operation(summary = "Create a new quiz")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Quiz created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping
     public ResponseEntity<QuizDto> createQuiz(@Valid @RequestBody QuizDto quizDto) {
         QuizDto created = quizService.createQuiz(quizDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    
-    // **** READ ****
-    // Returns the list of all quizzes for the template teacher.
+    @Tag(name = "Quizzes", description = "Operations related to quizzes")
+    @Operation(summary = "Get all quizzes for the template teacher")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No quizzes found")
+    })
     @GetMapping("/list")
     public List<Quiz> getQuizList() {
         Teacher teacher = getTemplateTeacher();
         return quizRepository.findByTeacher(teacher);
     }
-    
-    // Returns a single quiz by its ID.
+
+    @Tag(name = "Quizzes", description = "Operations related to quizzes")
+    @Operation(summary = "Get all quizzes that are published")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No quizzes found")
+    })
+    @GetMapping("/published-list")
+    public List<QuizDto> getAllPublishedQuizzes() {
+        return quizRepository.findByIspublished(true).stream().map(quiz -> quizService.toDto(quiz)).toList();
+    }
+
+    @Tag(name = "Quizzes", description = "Operations related to quizzes")
+    @Operation(summary = "Get all published quizzes by category", description = "Returns a list of published quizzes filtered by category name.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No quizzes found")
+    })
+    @GetMapping("/published-list/{category}")
+    public List<QuizDto> getAllPublishedQuizzesByCategory(@PathVariable String category) {
+        return quizRepository.findByIspublishedAndCategory_Title(true, category).stream()
+                .map(quiz -> quizService.toDto(quiz))
+                .toList();
+    }
+
+    @Tag(name = "Quizzes", description = "Operations related to quizzes")
+    @Operation(summary = "Get a quiz by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quiz retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Quiz not found")
+    })
     @GetMapping("/view/{id}")
     public ResponseEntity<Quiz> getQuizById(@PathVariable Long id) {
         Optional<Quiz> quizOpt = quizRepository.findById(id);
         return quizOpt.map(ResponseEntity::ok)
-                      .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    
-    // You can add update and delete endpoints similarly using @PutMapping and @DeleteMapping.
+
+    // You can add update and delete endpoints similarly using @PutMapping and
+    // @DeleteMapping.
 }

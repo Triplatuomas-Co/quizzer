@@ -114,7 +114,7 @@ public class QuizService {
         return toDto(saved);
     }
 
-    private QuizDto toDto(Quiz quiz) {
+    public QuizDto toDto(Quiz quiz) {
         QuizDto dto = new QuizDto();
         dto.setId(quiz.getQuiz_id());
         dto.setTeacherId(quiz.getTeacher().getTeacher_id());
