@@ -6,10 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.haagahelia.quizzer.domain.Category;
 import com.haagahelia.quizzer.domain.Option;
 import com.haagahelia.quizzer.domain.Question;
 import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Teacher;
+import com.haagahelia.quizzer.repository.CategoryRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
 
 import jakarta.transaction.Transactional;
@@ -19,6 +21,9 @@ class QuizzerApplicationTests {
 
 	@Autowired
 	private TeacherRepository teacherRepository;
+
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	@Test
 	void contextLoads() {
@@ -31,8 +36,12 @@ class QuizzerApplicationTests {
 		Teacher teacher = new Teacher("John", "Doe", new java.sql.Date(System.currentTimeMillis()));
 		teacher.setUsername("john_doe");
 
+		Category category = new Category("Category 1", "Description 1");
+
+		categoryRepository.save(category);
+
 		// Luodaan quiz ja liitetään se opettajaan
-		Quiz quiz = new Quiz("Category 1", teacher, 1, "Quiz Title", "Quiz Description", false);
+		Quiz quiz = new Quiz(category, teacher, 1, "Quiz Title", "Quiz Description", false);
 		teacher.getQuizzes().add(quiz);
 
 		// Luodaan kysymys ja liitetään se quiz:iin
@@ -49,7 +58,8 @@ class QuizzerApplicationTests {
 
 		// Haetaan opettaja tietokannasta ja varmistetaan, että kaikki liittyvät tiedot
 		// tallentuivat
-		Teacher savedTeacher = teacherRepository.findAll().get(1); // <-- Kannassa saattaa olla Template opettaja, joten käytetään indeksiä 1
+		Teacher savedTeacher = teacherRepository.findAll().get(1); // <-- Kannassa saattaa olla Template opettaja, joten
+																	// käytetään indeksiä 1
 		assertEquals("John", savedTeacher.getFirstName());
 		assertEquals("john_doe", savedTeacher.getUsername());
 		assertEquals(1, savedTeacher.getQuizzes().size());

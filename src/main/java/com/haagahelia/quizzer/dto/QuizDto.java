@@ -1,6 +1,7 @@
 package com.haagahelia.quizzer.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ public class QuizDto {
     private Long id;
 
     @NotBlank(message = "Category is required")
-    private String category;
+    private CategoryDTO category;
 
     /** If omitted, service will fall back to template teacher */
     private Long teacherId;
@@ -37,16 +38,17 @@ public class QuizDto {
     @Valid
     private List<QuestionDto> questions = new ArrayList<>();
 
-    public QuizDto() {}
+    public QuizDto() {
+    }
 
     public QuizDto(Long id,
-                   String category,
-                   Long teacherId,
-                   Integer difficulty,
-                   String title,
-                   String description,
-                   boolean published,
-                   List<QuestionDto> questions) {
+            CategoryDTO category,
+            Long teacherId,
+            Integer difficulty,
+            String title,
+            String description,
+            boolean published,
+            List<QuestionDto> questions) {
         this.id = id;
         this.category = category;
         this.teacherId = teacherId;
@@ -66,11 +68,11 @@ public class QuizDto {
         this.id = id;
     }
 
-    public String getCategory() {
+    public CategoryDTO getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(CategoryDTO category) {
         this.category = category;
     }
 

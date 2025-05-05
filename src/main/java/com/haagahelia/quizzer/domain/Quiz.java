@@ -19,7 +19,9 @@ public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long quiz_id;
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
@@ -35,7 +37,7 @@ public class Quiz {
         this.questions = new ArrayList<>();
     }
 
-    public Quiz(String category, Teacher teacher, int dificulty, String title,
+    public Quiz(Category category, Teacher teacher, int dificulty, String title,
             String description, boolean ispublished) {
         this.category = category;
         this.teacher = teacher;
@@ -50,11 +52,11 @@ public class Quiz {
         return quiz_id;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
