@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-interface Quiz {
+export interface Quiz {
   id: number;
   title: string;
   description: string;
+  category: string;
 }
 
 const QuizList: React.FC = () => {
