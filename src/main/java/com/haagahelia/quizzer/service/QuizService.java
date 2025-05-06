@@ -156,4 +156,10 @@ public class QuizService {
         dto.setQuestions(questionDtos);
         return dto;
     }
+
+    public List<CategoryDTO> toCategoryDTOs() {
+        return categoryRepository.findAll().stream()
+                .map(c -> new CategoryDTO(c.getCategory_id(), c.getTitle(), c.getDescription()))
+                .toList();
+    }
 }

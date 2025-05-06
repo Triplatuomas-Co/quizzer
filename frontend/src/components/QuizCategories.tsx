@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 type Category = {
   title: string;
+  description: string;
 };
 
 const QuizCategories: React.FC = () => {
@@ -9,7 +10,7 @@ const QuizCategories: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/quiz/list")
+    fetch("http://localhost:8080/api/quiz/categories")
       .then((response) => response.json())
       .then((data) => {
         const allCategories = data.map((quiz: { category: string }) => ({

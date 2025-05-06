@@ -2,7 +2,6 @@ package com.haagahelia.quizzer.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Locale.Category;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Teacher;
+import com.haagahelia.quizzer.dto.CategoryDTO;
 import com.haagahelia.quizzer.dto.QuizDto;
 import com.haagahelia.quizzer.repository.QuizRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
@@ -134,19 +134,6 @@ public class QuizRestController {
     }
 
     @Tag(name = "Quizzes", description = "Operations related to quizzes")
-    @Operation(summary = "Get all published quizzes by category", description = "Returns a list of published quizzes filtered by category name.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No quizzes found")
-    })
-    @GetMapping("/published-list/{category}")
-    public List<QuizDto> getAllPublishedQuizzesByCategory(@PathVariable String category) {
-        return quizRepository.findByIspublishedAndCategory_Title(true, category).stream()
-                .map(quiz -> quizService.toDto(quiz))
-                .toList();
-    }
-
-    @Tag(name = "Quizzes", description = "Operations related to quizzes")
     @Operation(summary = "Get a quiz by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quiz retrieved successfully"),
@@ -159,6 +146,29 @@ public class QuizRestController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Tag(name = "Quizzes", description = "Operations related to quizzes")
+    @Operation(summary = "Get all published quizzes by category", description = "Returns a list of published quizzes filtered by category name.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No quizzes found")
+    })
+    @GetMapping("/published-list/{category}")
+    public List<QuizDto> getAllPublishedQuizzesByCategory(@PathVariable String category) {
+        return quizRepository.findByIspublishedAndCategory_Title(true, category).stream()
+                .map(quiz -> quizService.toDto(quiz))
+                .toList();
+    }
+
+    @Tag(name = "Category", description = "Operations related to categories")
+    @Operation(summary = "Get all categories", description = "Returns a list of categories.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No quizzes found")
+    })
+    @GetMapping("/categories")
+    public List<CategoryDTO> getAllCategories() {
+        return quizService.toCategoryDTOs();
+    }
     // You can add update and delete endpoints similarly using @PutMapping and
     // @DeleteMapping.
 }
