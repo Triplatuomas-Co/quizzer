@@ -9,7 +9,7 @@ const QuizCategories: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("https://quizzer-git-quizzer-triplatuomas.2.rahtiapp.fi/api/quiz/list")
+    fetch("http://localhost:8080/api/quiz/list")
       .then((response) => response.json())
       .then((data) => {
         const allCategories = data.map((quiz: { category: string }) => ({
