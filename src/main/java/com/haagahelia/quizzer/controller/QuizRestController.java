@@ -17,6 +17,7 @@ import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Teacher;
 import com.haagahelia.quizzer.dto.CategoryDTO;
 import com.haagahelia.quizzer.dto.QuizDto;
+import com.haagahelia.quizzer.dto.ReviewDTO;
 import com.haagahelia.quizzer.repository.QuizRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
 import com.haagahelia.quizzer.service.QuizService;
@@ -113,8 +114,7 @@ public class QuizRestController {
     @Tag(name = "Quizzes", description = "Operations related to quizzes")
     @Operation(summary = "Get all quizzes for the template teacher")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No quizzes found")
+            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully")
     })
     @GetMapping("/list")
     public List<Quiz> getQuizList() {
@@ -125,8 +125,7 @@ public class QuizRestController {
     @Tag(name = "Quizzes", description = "Operations related to quizzes")
     @Operation(summary = "Get all quizzes that are published")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No quizzes found")
+            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully")
     })
     @GetMapping("/published-list")
     public List<QuizDto> getAllPublishedQuizzes() {
@@ -149,8 +148,7 @@ public class QuizRestController {
     @Tag(name = "Quizzes", description = "Operations related to quizzes")
     @Operation(summary = "Get all published quizzes by category", description = "Returns a list of published quizzes filtered by category name.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No quizzes found")
+            @ApiResponse(responseCode = "200", description = "Quizzes retrieved successfully")
     })
     @GetMapping("/published-list/{category}")
     public List<QuizDto> getAllPublishedQuizzesByCategory(@PathVariable String category) {
@@ -162,12 +160,21 @@ public class QuizRestController {
     @Tag(name = "Category", description = "Operations related to categories")
     @Operation(summary = "Get all categories", description = "Returns a list of categories.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No quizzes found")
+            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully")
     })
     @GetMapping("/categories")
     public List<CategoryDTO> getAllCategories() {
         return quizService.toCategoryDTOs();
+    }
+
+    @Tag(name = "Review", description = "Operations related to reviews")
+    @Operation(summary = "Get all reviews", description = "Returns a list of reviews from given quiz-id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reviews retrieved successfully")
+    })
+    @GetMapping("/reviews/{id}")
+    public List<ReviewDTO> getAllReviewsFromQuiz(@PathVariable Long id) {
+        return quizService.getListOfReviewDTOsFromQuiz(id);
     }
     // You can add update and delete endpoints similarly using @PutMapping and
     // @DeleteMapping.

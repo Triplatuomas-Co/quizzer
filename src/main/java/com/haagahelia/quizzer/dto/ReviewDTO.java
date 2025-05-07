@@ -14,10 +14,12 @@ public class ReviewDTO {
     public ReviewDTO() {
     }
 
-    public ReviewDTO(String nickname, int rating, String review) {
+    public ReviewDTO(Long review_id, String nickname, int rating, String review, Date created_date) {
+        this.review_id = review_id;
         this.nickname = nickname;
         this.rating = rating;
         this.review = review;
+        this.created_date = created_date;
     }
 
     public Long getReview_id() {

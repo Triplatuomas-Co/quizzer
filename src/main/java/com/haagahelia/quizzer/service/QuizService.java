@@ -157,9 +157,18 @@ public class QuizService {
         return dto;
     }
 
+    // to CategoryDTOs method to convert all categories to list of CategoryDTOs
     public List<CategoryDTO> toCategoryDTOs() {
         return categoryRepository.findAll().stream()
                 .map(c -> new CategoryDTO(c.getCategory_id(), c.getTitle(), c.getDescription()))
+                .toList();
+    }
+
+    // to CategoryDTO method to get list of reviews from quiz
+    public List<ReviewDTO> getListOfReviewDTOsFromQuiz(Long id) {
+        List<Review> reviews = quizRepository.findById(id).get().getReviews();
+        return reviews.stream().map(r -> new ReviewDTO(r.getReview_id(), r.getNickname(), r.getRating(),
+                r.getReview(), r.getCreated_date()))
                 .toList();
     }
 }
