@@ -2,6 +2,7 @@ package com.haagahelia.quizzer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,12 @@ class QuizzerApplicationTests {
 
 	@Test
 	void contextLoads() {
+	}
+
+	@BeforeEach
+	void setUp() {
+		teacherRepository.deleteAll();
+		categoryRepository.deleteAll();
 	}
 
 	@Test
@@ -58,8 +65,8 @@ class QuizzerApplicationTests {
 
 		// Haetaan opettaja tietokannasta ja varmistetaan, että kaikki liittyvät tiedot
 		// tallentuivat
-		Teacher savedTeacher = teacherRepository.findAll().get(1); // <-- Kannassa saattaa olla Template opettaja, joten
-																	// käytetään indeksiä 1
+		Teacher savedTeacher = teacherRepository.findAll().get(0);
+
 		assertEquals("John", savedTeacher.getFirstName());
 		assertEquals("john_doe", savedTeacher.getUsername());
 		assertEquals(1, savedTeacher.getQuizzes().size());

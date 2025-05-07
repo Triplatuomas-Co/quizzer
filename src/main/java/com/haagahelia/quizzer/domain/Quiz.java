@@ -28,13 +28,15 @@ public class Quiz {
     private int dificulty;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quiz")
-    private List<Question> questions;
+    private List<Question> questions = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "quiz")
+    private List<Review> reviews = new ArrayList<>();
     private String title;
     private String description;
     private boolean ispublished = false;
 
     public Quiz() {
-        this.questions = new ArrayList<>();
     }
 
     public Quiz(Category category, Teacher teacher, int dificulty, String title,
@@ -42,7 +44,6 @@ public class Quiz {
         this.category = category;
         this.teacher = teacher;
         this.dificulty = dificulty;
-        this.questions = new ArrayList<>();
         this.title = title;
         this.description = description;
         this.ispublished = ispublished;
@@ -110,8 +111,8 @@ public class Quiz {
 
     @Override
     public String toString() {
-        return "Quiz [id=" + quiz_id + ", category=" + category + ", teacher=" + teacher + ", dificulty=" + dificulty
-                + ", questions=" + questions + ", title=" + title + ", description=" + description + ", ispublished="
+        return "Quiz [id=" + quiz_id + ", dificulty=" + dificulty
+                + ", title=" + title + ", description=" + description + ", ispublished="
                 + ispublished + "]";
     }
 

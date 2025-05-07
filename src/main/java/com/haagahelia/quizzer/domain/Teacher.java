@@ -36,7 +36,7 @@ public class Teacher {
         this.dateOfBirth = dateOfBirth;
         this.quizzes = new ArrayList<>();
     }
-    
+
     // Special constructor for template teacher with ID 0
     public Teacher(Long id, String firstName, String lastName, String username) {
         this.teacher_id = id;
@@ -49,7 +49,7 @@ public class Teacher {
     public Long getTeacher_id() {
         return teacher_id;
     }
-    
+
     // Added setter for teacher_id for the template teacher
     public void setTeacher_id(Long teacher_id) {
         this.teacher_id = teacher_id;
@@ -78,7 +78,7 @@ public class Teacher {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
-    
+
     // Getters and setters for username
     public String getUsername() {
         return username;
@@ -99,6 +99,6 @@ public class Teacher {
     @Override
     public String toString() {
         return "Teacher [teacher_id=" + teacher_id + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", dateOfBirth=" + dateOfBirth + ", username=" + username + ", quizzes=" + quizzes + "]";
+                + ", dateOfBirth=" + dateOfBirth + ", username=" + username + "]";
     }
 }
