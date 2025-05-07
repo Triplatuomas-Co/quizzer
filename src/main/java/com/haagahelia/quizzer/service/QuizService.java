@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class QuizService {
@@ -90,22 +89,17 @@ public class QuizService {
         // the quiz
         if (quizDto.getQuestions() != null) {
             for (QuestionDto qDto : quizDto.getQuestions()) {
-                Question question = new Question();
-                question.setTitle(qDto.getTitle());
-                question.setDescription(qDto.getDescription());
-                question.setQuiz(quiz);
+                Question question = new Question(
+                        qDto.getTitle(), qDto.getDescription(), qDto.getDifficulty(), quiz);
 
                 if (qDto.getOptions() != null) {
                     for (OptionDto oDto : qDto.getOptions()) {
-                        Option option = new Option();
-                        option.setText(oDto.getText());
-                        option.setIscorrect(oDto.getCorrect());
-                        option.setQuestion(question);
-                        question.getOptions().add(option);
+                        Option option = new Option(
+                                oDto.getText(), oDto.getCorrect(), question);
+                        optionRepository.save(option);
                     }
                 }
-
-                quiz.getQuestions().add(question);
+                questionRepository.save(question);
             }
         }
 
@@ -115,45 +109,31 @@ public class QuizService {
     }
 
     public QuizDto toDto(Quiz quiz) {
-        QuizDto dto = new QuizDto();
-        dto.setId(quiz.getQuiz_id());
-        dto.setTeacherId(quiz.getTeacher().getTeacher_id());
-        dto.setDifficulty(quiz.getDificulty());
-        dto.setTitle(quiz.getTitle());
-        dto.setDescription(quiz.getDescription());
-        dto.setPublished(quiz.isIspublished());
-
         // Create a CategoryDTO from the Quiz's category
         CategoryDTO categoryDto = new CategoryDTO(quiz.getCategory().getCategory_id(),
                 quiz.getCategory().getTitle(), quiz.getCategory().getDescription());
 
-        dto.setCategory(categoryDto);
-
         // map nested questions → QuestionDto
         List<QuestionDto> questionDtos = quiz.getQuestions().stream()
                 .map(q -> {
-                    QuestionDto qDto = new QuestionDto();
-                    qDto.setId(q.getQuestion_id());
-                    qDto.setTitle(q.getTitle());
-                    qDto.setDescription(q.getDescription());
-
                     // map nested options → OptionDto
                     List<OptionDto> optionDtos = q.getOptions().stream()
                             .map(o -> {
-                                OptionDto oDto = new OptionDto();
-                                oDto.setId(o.getOption_id());
-                                oDto.setText(o.getText());
-                                oDto.setCorrect(o.isIscorrect());
+                                OptionDto oDto = new OptionDto(o.getOption_id(), o.getText(), o.getCorrect());
                                 return oDto;
                             })
-                            .collect(Collectors.toList());
-
-                    qDto.setOptions(optionDtos);
-                    return qDto;
+                            .toList();
+                    // create QuestionDto object using constructor
+                    return new QuestionDto(q.getQuestion_id(), q.getTitle(),
+                            q.getDifficulty(),
+                            q.getDescription(), optionDtos, q.getAnswerCount(), q.getCorrectAnswerCount());
                 })
-                .collect(Collectors.toList());
-
-        dto.setQuestions(questionDtos);
+                .toList();
+        // using constructor to create QuizDto object
+        QuizDto dto = new QuizDto(quiz.getQuiz_id(), categoryDto, quiz.getTeacher().getTeacher_id(),
+                quiz.getDificulty(),
+                quiz.getTitle(), quiz.getDescription(),
+                quiz.isIspublished(), questionDtos);
         return dto;
     }
 

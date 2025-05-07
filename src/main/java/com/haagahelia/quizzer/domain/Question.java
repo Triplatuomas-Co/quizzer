@@ -19,6 +19,7 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long question_id;
+    private int difficulty;
     private String title;
     private String description;
     @JsonIgnore
@@ -27,15 +28,18 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
+    private int answerCount = 0;
+    private int correctAnswerCount = 0;
 
     public Question() {
         this.options = new ArrayList<>();
     }
 
-    public Question(String title, String description, Quiz quiz) {
+    public Question(String title, String description, int difficulty, Quiz quiz) {
         this.options = new ArrayList<>();
         this.title = title;
         this.description = description;
+        this.difficulty = difficulty;
         this.quiz = quiz;
     }
 
@@ -59,6 +63,14 @@ public class Question {
         this.description = description;
     }
 
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+    }
+
     public List<Option> getOptions() {
         return options;
     }
@@ -73,6 +85,22 @@ public class Question {
 
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
+    }
+
+    public int getAnswerCount() {
+        return answerCount;
+    }
+
+    public void setAnswerCount(int answerCount) {
+        this.answerCount = answerCount;
+    }
+
+    public int getCorrectAnswerCount() {
+        return correctAnswerCount;
+    }
+
+    public void setCorrectAnswerCount(int correctAnswerCount) {
+        this.correctAnswerCount = correctAnswerCount;
     }
 
     @Override

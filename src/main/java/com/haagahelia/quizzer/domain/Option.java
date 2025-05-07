@@ -13,7 +13,7 @@ public class Option {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long option_id;
     private String text;
-    private boolean iscorrect;
+    private boolean correct;
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
@@ -21,9 +21,9 @@ public class Option {
     public Option() {
     }
 
-    public Option(String text, boolean iscorrect, Question question) {
+    public Option(String text, boolean correct, Question question) {
         this.text = text;
-        this.iscorrect = iscorrect;
+        this.correct = correct;
         this.question = question;
     }
 
@@ -39,12 +39,12 @@ public class Option {
         this.text = text;
     }
 
-    public boolean isIscorrect() {
-        return iscorrect;
+    public boolean getCorrect() {
+        return correct;
     }
 
-    public void setIscorrect(boolean iscorrect) {
-        this.iscorrect = iscorrect;
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
     }
 
     public Question getQuestion() {
@@ -57,7 +57,7 @@ public class Option {
 
     @Override
     public String toString() {
-        return "Option [option_id=" + option_id + ", text=" + text + ", iscorrect=" + iscorrect + ", question="
+        return "Option [option_id=" + option_id + ", text=" + text + ", iscorrect=" + correct + ", question="
                 + question + "]";
     }
 

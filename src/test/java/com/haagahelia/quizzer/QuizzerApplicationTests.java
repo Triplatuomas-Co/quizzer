@@ -52,7 +52,7 @@ class QuizzerApplicationTests {
 		teacher.getQuizzes().add(quiz);
 
 		// Luodaan kysymys ja liitetään se quiz:iin
-		Question question = new Question("Question 1", "Description 1", quiz);
+		Question question = new Question("Question 1", "Description 1", 1, quiz);
 		quiz.getQuestions().add(question);
 
 		// Luodaan vaihtoehto ja liitetään se kysymykseen

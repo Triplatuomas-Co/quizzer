@@ -39,7 +39,7 @@ public class QuizzerApplication implements CommandLineRunner {
 			Quiz quiz = new Quiz(category, teacher, i, "Quiz Title " + i, "Description for quiz " + i, true);
 			teacher.getQuizzes().add(quiz);
 
-			Question question = new Question("Question " + i, "Description for question " + i, quiz);
+			Question question = new Question("Question " + i, "Description for question " + i, 1, quiz);
 			quiz.getQuestions().add(question);
 
 			Option option = new Option("Option " + i, i % 2 == 0, question);

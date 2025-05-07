@@ -2,12 +2,21 @@ package com.haagahelia.quizzer.dto;
 
 import java.sql.Date;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 // object representing a review of a quiz and its DTO (Data Transfer Object)
 public class ReviewDTO {
 
     private Long review_id;
+    @NotBlank(message = "Nickname is required")
     private String nickname;
+
+    @Min(value = 1, message = "Rating must be at least 1")
+    @Min(value = 5, message = "Rating must be at most 5")
     private int rating;
+    @Size(max = 1000, message = "Review must be less than 1000 characters")
     private String review;
     private Date created_date;
 
