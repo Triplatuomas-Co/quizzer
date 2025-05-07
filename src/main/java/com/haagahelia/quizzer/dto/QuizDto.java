@@ -38,9 +38,6 @@ public class QuizDto {
     @Valid
     private List<QuestionDto> questions = new ArrayList<>();
 
-    @Valid
-    private List<ReviewDTO> reviews = new ArrayList<>();
-
     public QuizDto() {
     }
 
@@ -101,14 +98,6 @@ public class QuizDto {
 
     public void setQuestions(List<QuestionDto> questions) {
         this.questions = questions != null ? questions : new ArrayList<>();
-    }
-
-    public List<ReviewDTO> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<ReviewDTO> reviews) {
-        this.reviews = reviews;
     }
 
     public String getTitle() {
