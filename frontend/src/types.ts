@@ -10,3 +10,8 @@ export type Quiz = {
     isPublished: boolean;
     addedOn: string;
   };
+
+export type Category = {
+    title: string;
+    description: string;
+  };

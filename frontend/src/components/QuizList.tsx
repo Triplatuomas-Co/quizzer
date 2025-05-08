@@ -3,8 +3,6 @@ import { AllCommunityModule, ColDef, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react'; 
 import { Quiz } from "../types";
 
-
-
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export default function QuizList() {

@@ -1,38 +1,50 @@
 import React, { useEffect, useState } from "react";
+import { AllCommunityModule, ColDef, ModuleRegistry } from 'ag-grid-community'; 
+import { AgGridReact } from 'ag-grid-react'; 
+import { Category } from "../types";
 
-type Category = {
-  title: string;
-  description: string;
-};
 
-const QuizCategories: React.FC = () => {
+export default function QuizCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [columnDefs] = useState<ColDef<Category>[]>([
+    { field: "title", filter: true, flex: 1 },
+    { field: "description", filter: true, flex: 5 },
+  ]);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/quiz/categories")
-      .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch quizzes");
+      }
+      return response.json();
+    })
       .then((data) => {
-        const allCategories = data.map((quiz: { category: string }) => ({
-          title: quiz.category,
-        }));
-        setCategories(allCategories);
+        setCategories(data);
+        setLoading(false);
       })
-      .catch(() => setError("Failed to fetch categories"));
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+      
   }, []);
 
   if (error) return <div>Error: {error}</div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h2>Quiz Categories</h2>
-      <ul>
-        {categories.map((category, index) => (
-          <li key={index}>{category.title}</li>
-        ))}
-      </ul>
+    <div className="ag-theme-alpine" style={{ margin: "auto", height: 600, width: '80%' }}>
+      <h1>Categories</h1>
+      <AgGridReact
+        rowData={categories}
+        columnDefs={columnDefs}
+        rowHeight={35}
+        headerHeight={50}
+      />
     </div>
   );
-};
-
-export default QuizCategories;
+}

@@ -38,3 +38,8 @@
   padding-top: 70px;
   text-align: center;
 }
+
+.ag-cell {
+  text-align: left !important;
+}
+
