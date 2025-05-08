@@ -7,6 +7,7 @@ import com.haagahelia.quizzer.repository.*;
 import jakarta.annotation.PostConstruct;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +16,8 @@ import java.util.List;
 
 @Service
 public class QuizService {
+
+    private final ReviewRepository reviewRepository;
     private final QuizRepository quizRepository;
     private final TeacherRepository teacherRepository;
     private final QuestionRepository questionRepository;
@@ -29,12 +32,13 @@ public class QuizService {
 
     public QuizService(QuizRepository quizRepository, TeacherRepository teacherRepository,
             QuestionRepository questionRepository, OptionRepository optionRepository,
-            CategoryRepository categoryRepository) {
+            CategoryRepository categoryRepository, ReviewRepository reviewRepository) {
         this.quizRepository = quizRepository;
         this.teacherRepository = teacherRepository;
         this.questionRepository = questionRepository;
         this.optionRepository = optionRepository;
         this.categoryRepository = categoryRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     // Initialize the template teacher.
@@ -96,10 +100,10 @@ public class QuizService {
                     for (OptionDto oDto : qDto.getOptions()) {
                         Option option = new Option(
                                 oDto.getText(), oDto.getCorrect(), question);
-                        optionRepository.save(option);
+                        question.getOptions().add(option);
                     }
                 }
-                questionRepository.save(question);
+                quiz.getQuestions().add(question);
             }
         }
 
@@ -129,12 +133,11 @@ public class QuizService {
                             q.getDescription(), optionDtos, q.getAnswerCount(), q.getCorrectAnswerCount());
                 })
                 .toList();
-        // using constructor to create QuizDto object
-        QuizDto dto = new QuizDto(quiz.getQuiz_id(), categoryDto, quiz.getTeacher().getTeacher_id(),
+        // using constructor to create QuizDto object and return it
+        return new QuizDto(quiz.getQuiz_id(), categoryDto, quiz.getTeacher().getTeacher_id(),
                 quiz.getDificulty(),
                 quiz.getTitle(), quiz.getDescription(),
                 quiz.isIspublished(), questionDtos);
-        return dto;
     }
 
     // to CategoryDTOs method to convert all categories to list of CategoryDTOs
@@ -148,7 +151,29 @@ public class QuizService {
     public List<ReviewDTO> getListOfReviewDTOsFromQuiz(Long id) {
         List<Review> reviews = quizRepository.findById(id).get().getReviews();
         return reviews.stream().map(r -> new ReviewDTO(r.getReview_id(), r.getNickname(), r.getRating(),
-                r.getReview(), r.getCreated_date()))
+                r.getReview(), r.getCreated_date(), r.getQuiz().getQuiz_id()))
                 .toList();
+    }
+
+    // toReview method to convert ReviewDTO to Review object and save it to the quiz
+    public void toReview(ReviewDTO rDTO) {
+        Quiz quiz = quizRepository.findById(rDTO.getQuiz_id()).get();
+        Review review = new Review(rDTO.getNickname(), rDTO.getRating(), rDTO.getReview(),
+                quiz);
+        quiz.getReviews().add(review);
+        quizRepository.save(quiz);
+    }
+
+    // Method to update total answer count and correct answer count for a question
+    // if boolean true
+    public ResponseEntity<String> addAnswerCount(Long questionId, boolean isCorrect) {
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Question not found: " + questionId));
+        question.setAnswerCount(question.getAnswerCount() + 1);
+        if (isCorrect) {
+            question.setCorrectAnswerCount(question.getCorrectAnswerCount() + 1);
+        }
+        questionRepository.save(question);
+        return ResponseEntity.ok("Answer count updated successfully.");
     }
 }

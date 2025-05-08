@@ -5,13 +5,16 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Teacher;
@@ -28,6 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -175,6 +179,35 @@ public class QuizRestController {
     @GetMapping("/reviews/{id}")
     public List<ReviewDTO> getAllReviewsFromQuiz(@PathVariable Long id) {
         return quizService.getListOfReviewDTOsFromQuiz(id);
+    }
+
+    @Tag(name = "Review", description = "Operations related to reviews")
+    @Operation(summary = "Create Review", description = "Creates a new review for a quiz.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Review created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
+    @PostMapping("/review")
+    public ResponseEntity<ReviewDTO> createReview(@Valid @RequestBody ReviewDTO reviewDTO,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
+        quizService.toReview(reviewDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewDTO);
+    }
+
+    @Tag(name = "Question", description = "Operations related to questions")
+    @Operation(summary = "Updates answered times of Question", description = "Adds total answered times +1 to a Question and if boolean true, adds correctAnswerCount +1.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Updated successfully")
+    })
+    @PutMapping("/update-answered-times")
+    public ResponseEntity<String> updateQuestionAnsweredTimes(@RequestParam Long questionid,
+            @RequestParam boolean isCorrect) {
+
+        return quizService.addAnswerCount(questionid, isCorrect);
     }
     // You can add update and delete endpoints similarly using @PutMapping and
     // @DeleteMapping.

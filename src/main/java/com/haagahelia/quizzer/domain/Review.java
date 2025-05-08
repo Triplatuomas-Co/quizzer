@@ -26,10 +26,11 @@ public class Review {
     public Review() {
     }
 
-    public Review(String nickname, int rating, String review) {
+    public Review(String nickname, int rating, String review, Quiz quiz) {
         this.nickname = nickname;
         this.rating = rating;
         this.review = review;
+        this.quiz = quiz;
     }
 
     public Long getReview_id() {
@@ -62,6 +63,14 @@ public class Review {
 
     public Date getCreated_date() {
         return created_date;
+    }
+
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
     }
 
     @Override
