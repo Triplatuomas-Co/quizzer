@@ -1,12 +1,4 @@
 /* Main root container */
-#root {
-  width: 100%;
-  padding: 2rem;
-  font-family: system-ui, sans-serif;
-  /* Poistettu taustaväri, jotta AG Grid voi määrittää sen oman teemansa mukaan */
-  min-height: 100vh;
-  box-sizing: border-box;
-}
 
 /* Navbar at top */
 .navbar {
@@ -25,7 +17,7 @@
 .navbar a {
   color: white;
   text-decoration: none;
-  margin-right: 1.5rem;
+  margin: 0 1rem;
   font-weight: 500;
 }
 
@@ -42,4 +34,6 @@
 .ag-cell {
   text-align: left !important;
 }
+
+
 

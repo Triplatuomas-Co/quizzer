@@ -1,11 +1,11 @@
 import { Routes, Route, Link } from "react-router-dom";
 import "./App.css";
-import QuizList from "./components/QuizList";
-import QuizCategories from "./components/QuizCategories";
 import 'ag-grid-community/styles/ag-grid.css';
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import CategoriesPage from "./pages/CategoriesPage";
+import QuizzesPage from "./pages/QuizzesPage";
 
-function App() {
+export default function App() {
   return (
     <div className="app-container">
       <nav className="navbar">
@@ -14,27 +14,11 @@ function App() {
       </nav>
 
       <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <h1>Quizzes</h1>
-              <QuizList />
-            </>
-          }
-        />
-        <Route
-          path="/categories"
-          element={
-            <>
-              <h1>Quiz Categories</h1>
-              <QuizCategories />
-            </>
-          }
-        />
+        <Route path="/" element={<QuizzesPage />} />
+        <Route path="/categories" element={<CategoriesPage />} />
       </Routes>
     </div>
   );
 }
 
-export default App;
+
