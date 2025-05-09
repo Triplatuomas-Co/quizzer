@@ -44,6 +44,7 @@ public class QuizService {
     // Initialize the template teacher.
     @PostConstruct
     public void initTemplateTeacher() {
+
         if (teacherRepository.findByUsername(TEMPLATE_TEACHER_USERNAME) == null) {
             Teacher templateTeacher = new Teacher();
             templateTeacher.setFirstName(TEMPLATE_TEACHER_FIRSTNAME);
@@ -55,6 +56,7 @@ public class QuizService {
 
     // Helper method to retrieve the template teacher.
     private Teacher getTemplateTeacher() {
+
         Teacher teacher = teacherRepository.findByUsername(TEMPLATE_TEACHER_USERNAME);
         if (teacher == null) {
             throw new RuntimeException("Template teacher was not initialized properly.");
@@ -92,6 +94,7 @@ public class QuizService {
         // if the quiz has a list of question IDs, fetch the questions and set them in
         // the quiz
         if (quizDto.getQuestions() != null) {
+
             for (QuestionDto qDto : quizDto.getQuestions()) {
                 Question question = new Question(
                         qDto.getTitle(), qDto.getDescription(), qDto.getDifficulty(), quiz);
@@ -142,6 +145,7 @@ public class QuizService {
 
     // to CategoryDTOs method to convert all categories to list of CategoryDTOs
     public List<CategoryDTO> toCategoryDTOs() {
+
         return categoryRepository.findAll().stream()
                 .map(c -> new CategoryDTO(c.getCategory_id(), c.getTitle(), c.getDescription()))
                 .toList();
@@ -149,6 +153,7 @@ public class QuizService {
 
     // to CategoryDTO method to get list of reviews from quiz
     public List<ReviewDTO> getListOfReviewDTOsFromQuiz(Long id) {
+
         List<Review> reviews = quizRepository.findById(id).get().getReviews();
         return reviews.stream().map(r -> new ReviewDTO(r.getReview_id(), r.getNickname(), r.getRating(),
                 r.getReview(), r.getCreated_date(), r.getQuiz().getQuiz_id()))
@@ -157,6 +162,7 @@ public class QuizService {
 
     // toReview method to convert ReviewDTO to Review object and save it to the quiz
     public void toReview(ReviewDTO rDTO) {
+
         Quiz quiz = quizRepository.findById(rDTO.getQuiz_id()).get();
         Review review = new Review(rDTO.getNickname(), rDTO.getRating(), rDTO.getReview(),
                 quiz);
@@ -167,6 +173,7 @@ public class QuizService {
     // Method to update total answer count and correct answer count for a question
     // if boolean true
     public ResponseEntity<String> addAnswerCount(Long questionId, boolean isCorrect) {
+
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Question not found: " + questionId));
         question.setAnswerCount(question.getAnswerCount() + 1);
@@ -175,5 +182,16 @@ public class QuizService {
         }
         questionRepository.save(question);
         return ResponseEntity.ok("Answer count updated successfully.");
+    }
+
+    // Method for updating review
+    public void updateReview(Long id, ReviewDTO reviewDTO) {
+
+        Review review = reviewRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Review not found: " + id));
+        review.setNickname(reviewDTO.getNickname());
+        review.setRating(reviewDTO.getRating());
+        review.setReview(reviewDTO.getReview());
+        reviewRepository.save(review);
     }
 }

@@ -142,11 +142,11 @@ public class QuizRestController {
             @ApiResponse(responseCode = "200", description = "Quiz retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Quiz not found")
     })
-    @GetMapping("/view/{id}")
-    public ResponseEntity<Quiz> getQuizById(@PathVariable Long id) {
-        Optional<Quiz> quizOpt = quizRepository.findById(id);
-        return quizOpt.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{id}")
+    public ResponseEntity<QuizDto> getQuizById(@PathVariable Long id) {
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found with id: " + id));
+        return ResponseEntity.ok(quizService.toDto(quiz));
     }
 
     @Tag(name = "Quizzes", description = "Operations related to quizzes")
@@ -195,6 +195,23 @@ public class QuizRestController {
                     bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         quizService.toReview(reviewDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewDTO);
+    }
+
+    @Tag(name = "Review", description = "Operations related to reviews")
+    @Operation(summary = "Update Review", description = "Updates review of quiz.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Review updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
+    @PutMapping("/review/{id}")
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id,
+            @Valid @RequestBody ReviewDTO reviewDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
+        quizService.updateReview(id, reviewDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewDTO);
     }
 
