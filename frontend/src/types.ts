@@ -14,4 +14,5 @@ export type Quiz = {
 export type Category = {
     title: string;
     description: string;
+    viewQuizzes: string;
   };

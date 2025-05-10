@@ -1,5 +1,3 @@
-// This hook fetches data from a given API URL and manages loading and error states.
-// It returns the fetched data, loading state, and any error message encountered during the fetch process.
 import { useState, useEffect } from "react";
 
 export function useFetch<T>(apiUrl: string) {
@@ -7,6 +5,7 @@ export function useFetch<T>(apiUrl: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch data from the API 
   useEffect(() => {
     setLoading(true);
     fetch(apiUrl)
