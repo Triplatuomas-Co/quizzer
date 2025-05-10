@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class QuizService {
@@ -117,8 +120,7 @@ public class QuizService {
 
     public QuizDto toDto(Quiz quiz) {
         // Create a CategoryDTO from the Quiz's category
-        CategoryDTO categoryDto = new CategoryDTO(quiz.getCategory().getCategory_id(),
-                quiz.getCategory().getTitle(), quiz.getCategory().getDescription());
+        CategoryDTO categoryDto = quiz.getCategory() != null ? toCategoryDTO(quiz.getCategory()) : null;
 
         // map nested questions → QuestionDto
         List<QuestionDto> questionDtos = quiz.getQuestions().stream()
@@ -143,12 +145,37 @@ public class QuizService {
                 quiz.isIspublished(), questionDtos);
     }
 
+    public Quiz toEntity(QuizDto quizDto) {
+        Quiz quiz = new Quiz();
+        quiz.setTitle(quizDto.getTitle());
+        quiz.setDescription(quizDto.getDescription());
+        quiz.setDificulty(quizDto.getDifficulty());
+        quiz.setIspublished(quizDto.isPublished());
+
+        // Handle category conversion from DTO to Entity
+        if (quizDto.getCategory() != null) {
+            if (quizDto.getCategory().getId() > 0L) {
+                Category category = categoryRepository.findById(quizDto.getCategory().getId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Category not found with id: " + quizDto.getCategory().getId()));
+                quiz.setCategory(category);
+            } else if (quizDto.getCategory().getTitle() != null) {
+                Category category = categoryRepository.findByTitle(quizDto.getCategory().getTitle());
+                if (category == null) {
+                    category = new Category();
+                    category.setTitle(quizDto.getCategory().getTitle());
+                    category.setDescription(quizDto.getCategory().getDescription());
+                    category = categoryRepository.save(category);
+                }
+                quiz.setCategory(category);
+            }
+        }
+        return quiz;
+    }
+
     // to CategoryDTOs method to convert all categories to list of CategoryDTOs
     public List<CategoryDTO> toCategoryDTOs() {
-
-        return categoryRepository.findAll().stream()
-                .map(c -> new CategoryDTO(c.getCategory_id(), c.getTitle(), c.getDescription()))
-                .toList();
+        return getAllCategoryDTOs();
     }
 
     // to CategoryDTO method to get list of reviews from quiz
@@ -193,5 +220,58 @@ public class QuizService {
         review.setRating(reviewDTO.getRating());
         review.setReview(reviewDTO.getReview());
         reviewRepository.save(review);
+    }
+
+    // **** CATEGORY SERVICE METHODS ****
+
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> getAllCategoryDTOs() {
+        return StreamSupport.stream(categoryRepository.findAll().spliterator(), false)
+                .map(this::toCategoryDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void createCategory(CategoryDTO categoryDTO) {
+        // Check if category with the same title already exists
+        if (categoryRepository.findByTitle(categoryDTO.getTitle()) != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Category with title '" + categoryDTO.getTitle() + "' already exists.");
+        }
+        Category category = toCategoryEntity(categoryDTO);
+        categoryRepository.save(category);
+    }
+
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Category not found with id: " + categoryId));
+
+        // Check if the category is used by any quizzes
+        List<Quiz> quizzesUsingCategory = quizRepository.findByCategory(category);
+        if (!quizzesUsingCategory.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Cannot delete category '" + category.getTitle() + "' as it is currently in use by " + quizzesUsingCategory.size() + " quiz(zes).");
+        }
+
+        categoryRepository.delete(category);
+    }
+
+    private CategoryDTO toCategoryDTO(Category category) {
+        if (category == null) {
+            return null;
+        }
+        return new CategoryDTO(category.getCategory_id(), category.getTitle(), category.getDescription());
+    }
+
+    private Category toCategoryEntity(CategoryDTO categoryDTO) {
+        if (categoryDTO == null) {
+            return null;
+        }
+        Category category = new Category();
+        category.setTitle(categoryDTO.getTitle());
+        category.setDescription(categoryDTO.getDescription());
+        return category;
     }
 }

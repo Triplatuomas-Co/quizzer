@@ -2,47 +2,99 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Add Question</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 20px; }
+        .option-input-group { display: flex; align-items: center; margin-bottom: 10px; }
+        .option-input-group input[type="text"] { flex-grow: 1; margin-right: 10px; }
+        .option-input-group input[type="checkbox"] { margin-left: 5px; margin-right: 10px; }
+        .option-input-group button { flex-shrink: 0; }
+    </style>
 </head>
 <body>
-<h2>Add a New Question</h2>
+<div class="container">
+    <h2>Add New Question to Quiz: <span th:text="${question.quiz.title}">Quiz Title</span></h2>
 
-<form th:action="@{'/quiz/' + ${question.quiz.quiz_id} + '/savequestion'}"
-      th:object="${question}" method="post">
+    <form th:action="@{/quiz/{id}/savequestion(id=${question.quiz.quiz_id})}" th:object="${question}" method="post" class="mt-4">
+        <input type="hidden" th:field="*{quiz.quiz_id}" />
 
-    <label>Question:</label><br/>
-    <input type="text" th:field="*{title}" required /><br/><br/>
+        <div class="mb-3">
+            <label for="questionTitle" class="form-label">Question Title:</label>
+            <input type="text" id="questionTitle" th:field="*{title}" class="form-control" required />
+        </div>
 
-    <label>Options:</label><br/>
-    <ul>
-        <li th:each="option, iterStat : *{options}">
-            <input type="text" th:field="*{options[__${iterStat.index}__].text}" required />
-            <input type="checkbox" th:field="*{options[__${iterStat.index}__].iscorrect}" /> Correct<br/><br/>
-        </li>
-    </ul>
-    <button type="button" onclick="addOption()">+ Add Option</button><br/><br/>
+        <div class="mb-3">
+            <label for="questionDescription" class="form-label">Question Description (Optional):</label>
+            <textarea id="questionDescription" th:field="*{description}" rows="2" class="form-control"></textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="difficulty" class="form-label">Difficulty (Optional, 1-5):</label>
+            <input type="number" id="difficulty" th:field="*{difficulty}" min="1" max="5" class="form-control" />
+        </div>
 
-    <button type="submit">Save</button>
-</form>
+        <h4>Options:</h4>
+        <div id="options-container">
+            <!-- Initial option (can be empty or pre-filled if needed) -->
+            <div class="option-input-group" th:each="option, iterStat : *{options}">
+                 <input type="text" th:field="*{options[__${iterStat.index}__].text}" placeholder="Option text" class="form-control" required />
+                 <input type="checkbox" th:field="*{options[__${iterStat.index}__].correct}" class="form-check-input" title="Mark as correct"/> Correct
+                 <button type="button" class="btn btn-danger btn-sm remove-option-btn" onclick="removeOption(this)">Remove</button>
+            </div>
+             <!-- Default empty option to start with if no options exist -->
+            <div class="option-input-group" th:if="*{options.isEmpty()}">
+                <input type="text" name="options[0].text" placeholder="Option text" class="form-control" required />
+                <input type="checkbox" name="options[0].correct" class="form-check-input" title="Mark as correct"/> Correct
+                <button type="button" class="btn btn-danger btn-sm remove-option-btn" onclick="removeOption(this)" style="display:none;">Remove</button>
+            </div>
+        </div>
+        <button type="button" id="add-option-btn" class="btn btn-success mt-2 mb-3">Add Option</button>
+
+        <button type="submit" class="btn btn-primary">Save Question</button>
+        <a th:href="@{/quiz/view/{id}(id=${question.quiz.quiz_id})}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div> <!-- /container -->
 
 <script>
-    let optionIndex = 0;
-
-    function addOption() {
-        const ul = document.querySelector('ul');
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <input type="text" name="options[${optionIndex}].text" required />
-            <input type="checkbox" name="options[${optionIndex}].iscorrect" /> Correct<br/><br/>
+    document.getElementById('add-option-btn').addEventListener('click', function() {
+        const optionsContainer = document.getElementById('options-container');
+        const optionIndex = optionsContainer.getElementsByClassName('option-input-group').length;
+        const newOptionDiv = document.createElement('div');
+        newOptionDiv.classList.add('option-input-group');
+        newOptionDiv.innerHTML = `
+            <input type="text" name="options[${optionIndex}].text" placeholder="Option text" class="form-control" required />
+            <input type="checkbox" name="options[${optionIndex}].correct" class="form-check-input" title="Mark as correct"/> Correct
+            <button type="button" class="btn btn-danger btn-sm remove-option-btn" onclick="removeOption(this)">Remove</button>
         `;
-        ul.appendChild(li);
-        optionIndex++;
+        optionsContainer.appendChild(newOptionDiv);
+        updateRemoveButtons();
+    });
+
+    function removeOption(button) {
+        button.parentElement.remove();
+        updateRemoveButtons();
     }
+    
+    function updateRemoveButtons() {
+        const optionGroups = document.querySelectorAll('#options-container .option-input-group');
+        optionGroups.forEach((group, index) => {
+            const removeBtn = group.querySelector('.remove-option-btn');
+            if (optionGroups.length > 1) {
+                removeBtn.style.display = 'inline-block';
+            } else {
+                removeBtn.style.display = 'none'; // Hide remove button if only one option left
+            }
+        });
+    }
+
+    // Initial call to set button visibility
+    document.addEventListener('DOMContentLoaded', updateRemoveButtons);
 </script>
 
+<!-- Optional: Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-<!-- This page allows the user to add a new question to a quiz. 
-     It binds form fields to the 'question' object using Thymeleaf, and submits the form 
-     to save the new question and its options to the backend. -->
 

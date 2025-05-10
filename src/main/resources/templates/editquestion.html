@@ -2,48 +2,107 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit Question</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 20px; }
+        .option-input-group { display: flex; align-items: center; margin-bottom: 10px; }
+        .option-input-group input[type="text"] { flex-grow: 1; margin-right: 10px; }
+        .option-input-group input[type="checkbox"] { margin-left: 5px; margin-right: 10px; }
+        .option-input-group button { flex-shrink: 0; }
+    </style>
 </head>
 <body>
-<h2>Edit Question</h2>
+<div class="container">
+    <h2>Edit Question for Quiz: <span th:text="${question.quiz.title}">Quiz Title</span></h2>
 
-<form th:action="@{'/question/' + ${question.question_id} + '/update'}" th:object="${question}" method="post">
-    <label>Title:</label><br/>
-    <input type="text" th:field="*{title}" required /><br/><br/>
+    <form th:action="@{/question/{id}/update(id=${question.question_id})}" th:object="${question}" method="post" class="mt-4">
+        <input type="hidden" th:field="*{question_id}" />
+        <input type="hidden" th:field="*{quiz.quiz_id}" />
 
-    <label>Options:</label><br/>
-    <ul id="options-list">
-        <li th:each="option, iterStat : *{options}">
-            <input type="text" th:field="*{options[__${iterStat.index}__].text}" required />
-            <input type="checkbox" th:field="*{options[__${iterStat.index}__].iscorrect}" /> Correct<br/><br/>
-        </li>
-    </ul>
-    <button type="button" onclick="addOption()">+ Add Option</button><br/><br/>
+        <div class="mb-3">
+            <label for="questionTitle" class="form-label">Question Title:</label>
+            <input type="text" id="questionTitle" th:field="*{title}" class="form-control" required />
+        </div>
 
-    <button type="submit">Save Changes</button>
-</form>
+        <div class="mb-3">
+            <label for="questionDescription" class="form-label">Question Description (Optional):</label>
+            <textarea id="questionDescription" th:field="*{description}" rows="2" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="difficulty" class="form-label">Difficulty (Optional, 1-5):</label>
+            <input type="number" id="difficulty" th:field="*{difficulty}" min="1" max="5" class="form-control" />
+        </div>
+
+        <h4>Options:</h4>
+        <div id="options-container">
+            <div th:each="option, iterStat : *{options}" class="option-input-group">
+                <input type="hidden" th:field="*{options[__${iterStat.index}__].option_id}" />
+                <input type="text" th:field="*{options[__${iterStat.index}__].text}" placeholder="Option text" class="form-control" required />
+                <input type="checkbox" th:field="*{options[__${iterStat.index}__].correct}" class="form-check-input" title="Mark as correct"/> Correct
+                <button type="button" class="btn btn-danger btn-sm remove-option-btn" onclick="removeOption(this)">Remove</button>
+            </div>
+        </div>
+        <button type="button" id="add-option-btn" class="btn btn-success mt-2 mb-3">Add Option</button>
+
+        <button type="submit" class="btn btn-primary">Update Question</button>
+        <a th:href="@{/quiz/view/{id}(id=${question.quiz.quiz_id})}" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div> <!-- /container -->
 
 <script>
-    let optionIndex = document.querySelectorAll('#options-list li').length;
+    document.getElementById('add-option-btn').addEventListener('click', function() {
+        const optionsContainer = document.getElementById('options-container');
+        // Calculate index based on existing option groups to ensure unique names for new options
+        const existingOptionGroups = optionsContainer.getElementsByClassName('option-input-group');
+        let maxIndex = -1;
+        for (let i = 0; i < existingOptionGroups.length; i++) {
+            const inputs = existingOptionGroups[i].querySelectorAll('input[name^="options["]');
+            if (inputs.length > 0) {
+                const name = inputs[0].getAttribute('name'); // e.g., options[0].text
+                const match = name.match(/options\[(\d+)\]/);
+                if (match && parseInt(match[1]) > maxIndex) {
+                    maxIndex = parseInt(match[1]);
+                }
+            }
+        }
+        const optionIndex = maxIndex + 1;
 
-    function addOption() {
-        const ul = document.getElementById('options-list');
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <input type="text" name="options[${optionIndex}].text" placeholder="Option text" required />
-            <input type="checkbox" name="options[${optionIndex}].iscorrect" /> Correct<br/><br/>
+        const newOptionDiv = document.createElement('div');
+        newOptionDiv.classList.add('option-input-group');
+        newOptionDiv.innerHTML = `
+            <input type="hidden" name="options[${optionIndex}].option_id" value="0" /> <!-- New options have ID 0 or null -->
+            <input type="text" name="options[${optionIndex}].text" placeholder="Option text" class="form-control" required />
+            <input type="checkbox" name="options[${optionIndex}].correct" class="form-check-input" title="Mark as correct"/> Correct
+            <button type="button" class="btn btn-danger btn-sm remove-option-btn" onclick="removeOption(this)">Remove</button>
         `;
-        ul.appendChild(li);
-        optionIndex++;
+        optionsContainer.appendChild(newOptionDiv);
+        updateRemoveButtonsState();
+    });
+
+    function removeOption(button) {
+        button.parentElement.remove();
+        updateRemoveButtonsState();
     }
+
+    function updateRemoveButtonsState() {
+        const optionGroups = document.querySelectorAll('#options-container .option-input-group');
+        optionGroups.forEach((group) => {
+            const removeBtn = group.querySelector('.remove-option-btn');
+            if (removeBtn) { // Ensure button exists
+                 removeBtn.style.display = optionGroups.length > 1 ? 'inline-block' : 'none';
+            }
+        });
+    }
+    
+    // Initial state for remove buttons
+    document.addEventListener('DOMContentLoaded', updateRemoveButtonsState);
 </script>
 
-<p><a th:href="@{'/quiz/view/' + ${question.quiz.quiz_id}}">← Back to Quiz</a></p>
+<!-- Optional: Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-<!--
-This page allows the user to edit a question and its answer options.
-The form is bound to the 'question' object and sends updates to the backend.
-User can also dynamically add more options using JavaScript.
--->
 
