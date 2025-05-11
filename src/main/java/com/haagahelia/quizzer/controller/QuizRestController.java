@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Teacher;
 import com.haagahelia.quizzer.dto.CategoryDTO;
+import com.haagahelia.quizzer.dto.QuestionDto;
 import com.haagahelia.quizzer.dto.QuizDto;
 import com.haagahelia.quizzer.dto.ReviewDTO;
 import com.haagahelia.quizzer.repository.QuizRepository;
@@ -159,6 +160,18 @@ public class QuizRestController {
         return quizRepository.findByIspublishedAndCategory_Title(true, category).stream()
                 .map(quiz -> quizService.toDto(quiz))
                 .toList();
+    }
+
+    @Tag(name = "Question", description = "Operations related to Questions")
+    @Operation(summary = "Get all Questions of Quiz", description = "Returns a list of questions from given quiz-id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Questions retrieved successfully")
+    })
+    @GetMapping("/questions/{id}")
+    public List<QuestionDto> getAllQuestionsFromQuiz(@PathVariable Long id) {
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found with id: " + id));
+        return quizService.getListOfQuestionDTOsFromQuiz(quiz);
     }
 
     @Tag(name = "Category", description = "Operations related to categories")

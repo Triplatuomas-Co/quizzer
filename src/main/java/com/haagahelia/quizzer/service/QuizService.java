@@ -122,22 +122,9 @@ public class QuizService {
         // Create a CategoryDTO from the Quiz's category
         CategoryDTO categoryDto = quiz.getCategory() != null ? toCategoryDTO(quiz.getCategory()) : null;
 
-        // map nested questions → QuestionDto
-        List<QuestionDto> questionDtos = quiz.getQuestions().stream()
-                .map(q -> {
-                    // map nested options → OptionDto
-                    List<OptionDto> optionDtos = q.getOptions().stream()
-                            .map(o -> {
-                                OptionDto oDto = new OptionDto(o.getOption_id(), o.getText(), o.getCorrect());
-                                return oDto;
-                            })
-                            .toList();
-                    // create QuestionDto object using constructor
-                    return new QuestionDto(q.getQuestion_id(), q.getTitle(),
-                            q.getDifficulty(),
-                            q.getDescription(), optionDtos, q.getAnswerCount(), q.getCorrectAnswerCount());
-                })
-                .toList();
+        // Create a list of QuestionDto from the Quiz's questions using service method
+        List<QuestionDto> questionDtos = getListOfQuestionDTOsFromQuiz(quiz);
+
         // using constructor to create QuizDto object and return it
         return new QuizDto(quiz.getQuiz_id(), categoryDto, quiz.getTeacher().getTeacher_id(),
                 quiz.getDificulty(),
@@ -252,7 +239,8 @@ public class QuizService {
         List<Quiz> quizzesUsingCategory = quizRepository.findByCategory(category);
         if (!quizzesUsingCategory.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Cannot delete category '" + category.getTitle() + "' as it is currently in use by " + quizzesUsingCategory.size() + " quiz(zes).");
+                    "Cannot delete category '" + category.getTitle() + "' as it is currently in use by "
+                            + quizzesUsingCategory.size() + " quiz(zes).");
         }
 
         categoryRepository.delete(category);
@@ -273,5 +261,27 @@ public class QuizService {
         category.setTitle(categoryDTO.getTitle());
         category.setDescription(categoryDTO.getDescription());
         return category;
+    }
+
+    // **** QUESTION SERVICE METHODS ****
+
+    public List<QuestionDto> getListOfQuestionDTOsFromQuiz(Quiz quiz) {
+
+        List<QuestionDto> questionDtos = quiz.getQuestions().stream()
+                .map(q -> {
+                    // map nested options → OptionDto
+                    List<OptionDto> optionDtos = q.getOptions().stream()
+                            .map(o -> {
+                                OptionDto oDto = new OptionDto(o.getOption_id(), o.getText(), o.getCorrect());
+                                return oDto;
+                            })
+                            .toList();
+                    // create QuestionDto object using constructor
+                    return new QuestionDto(q.getQuestion_id(), q.getTitle(),
+                            q.getDifficulty(),
+                            q.getDescription(), optionDtos, q.getAnswerCount(), q.getCorrectAnswerCount());
+                })
+                .toList();
+        return questionDtos;
     }
 }
