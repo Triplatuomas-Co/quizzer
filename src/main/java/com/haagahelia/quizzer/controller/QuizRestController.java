@@ -1,12 +1,12 @@
 package com.haagahelia.quizzer.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.haagahelia.quizzer.domain.Quiz;
+import com.haagahelia.quizzer.domain.Review;
 import com.haagahelia.quizzer.domain.Teacher;
 import com.haagahelia.quizzer.dto.CategoryDTO;
 import com.haagahelia.quizzer.dto.QuestionDto;
 import com.haagahelia.quizzer.dto.QuizDto;
 import com.haagahelia.quizzer.dto.ReviewDTO;
 import com.haagahelia.quizzer.repository.QuizRepository;
+import com.haagahelia.quizzer.repository.ReviewRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
 import com.haagahelia.quizzer.service.QuizService;
 
@@ -42,6 +44,7 @@ public class QuizRestController {
     private final QuizRepository quizRepository;
     private final TeacherRepository teacherRepository;
     private final QuizService quizService;
+    private final ReviewRepository reviewRepository;
 
     // Constants for the template teacher for testing purposes.
     private static final String TEMPLATE_TEACHER_USERNAME = "template_teacher";
@@ -49,10 +52,11 @@ public class QuizRestController {
     private static final String TEMPLATE_TEACHER_LASTNAME = "Teacher";
 
     public QuizRestController(QuizRepository quizRepository, TeacherRepository teacherRepository,
-            QuizService quizService) {
+            QuizService quizService, ReviewRepository reviewRepository) {
         this.quizRepository = quizRepository;
         this.teacherRepository = teacherRepository;
         this.quizService = quizService;
+        this.reviewRepository = reviewRepository;
     }
 
     // Initialize the template teacher.
@@ -189,7 +193,7 @@ public class QuizRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Reviews retrieved successfully")
     })
-    @GetMapping("/reviews/{id}")
+    @GetMapping("/{id}/reviews")
     public List<ReviewDTO> getAllReviewsFromQuiz(@PathVariable Long id) {
         return quizService.getListOfReviewDTOsFromQuiz(id);
     }
@@ -226,6 +230,18 @@ public class QuizRestController {
         }
         quizService.updateReview(id, reviewDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewDTO);
+    }
+
+    @Tag(name = "Review", description = "Operations related to reviews")
+    @Operation(summary = "Delete Review", description = "Delete review of quiz.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Review deleted successfully")
+    })
+    @DeleteMapping("/review/{id}")
+    public ResponseEntity<String> deleteReview(@PathVariable Long id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found with id: " + id));
+        return quizService.deleteReview(review);
     }
 
     @Tag(name = "Question", description = "Operations related to questions")

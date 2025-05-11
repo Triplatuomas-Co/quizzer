@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -24,7 +23,6 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final TeacherRepository teacherRepository;
     private final QuestionRepository questionRepository;
-    private final OptionRepository optionRepository;
     private final CategoryRepository categoryRepository;
 
     // Constants for the template teacher
@@ -34,12 +32,11 @@ public class QuizService {
     private static final String TEMPLATE_TEACHER_LASTNAME = "Teacher";
 
     public QuizService(QuizRepository quizRepository, TeacherRepository teacherRepository,
-            QuestionRepository questionRepository, OptionRepository optionRepository,
+            QuestionRepository questionRepository,
             CategoryRepository categoryRepository, ReviewRepository reviewRepository) {
         this.quizRepository = quizRepository;
         this.teacherRepository = teacherRepository;
         this.questionRepository = questionRepository;
-        this.optionRepository = optionRepository;
         this.categoryRepository = categoryRepository;
         this.reviewRepository = reviewRepository;
     }
@@ -207,6 +204,14 @@ public class QuizService {
         review.setRating(reviewDTO.getRating());
         review.setReview(reviewDTO.getReview());
         reviewRepository.save(review);
+    }
+
+    public ResponseEntity<String> deleteReview(Review review) {
+        Quiz quiz = review.getQuiz();
+        quiz.getReviews().remove(review);
+        quizRepository.save(quiz);
+        return ResponseEntity.ok("Review deleted successfully.");
+
     }
 
     // **** CATEGORY SERVICE METHODS ****
