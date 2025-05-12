@@ -65,55 +65,58 @@ public class QuizService {
     }
 
     // **** CREATE ****
-    @Transactional
-    public QuizDto createQuiz(QuizDto quizDto) {
+    // @Transactional
+    // public QuizDto createQuiz(QuizDto quizDto) {
 
-        // Teacher ID is optional; if not provided, use the template teacher
-        // for testing purposes. This should be removed once Spring Security is
-        // implemented.
-        Teacher teacher = quizDto.getTeacherId() != null
-                ? teacherRepository.findById(quizDto.getTeacherId())
-                        .orElseThrow(() -> new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST, "Teacher not found: " + quizDto.getTeacherId()))
-                : getTemplateTeacher();
+    // // Teacher ID is optional; if not provided, use the template teacher
+    // // for testing purposes. This should be removed once Spring Security is
+    // // implemented.
+    // Teacher teacher = quizDto.getTeacherId() != null
+    // ? teacherRepository.findById(quizDto.getTeacherId())
+    // .orElseThrow(() -> new ResponseStatusException(
+    // HttpStatus.BAD_REQUEST, "Teacher not found: " + quizDto.getTeacherId()))
+    // : getTemplateTeacher();
 
-        // create category -object from the DTO
-        Category category = categoryRepository.findById(quizDto.getCategory().getId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Category not found: " + quizDto.getCategory().getId()));
+    // // create category -object from the DTO
+    // Category category =
+    // categoryRepository.findById(quizDto.getCategory().getId())
+    // .orElseThrow(() -> new ResponseStatusException(
+    // HttpStatus.BAD_REQUEST, "Category not found: " +
+    // quizDto.getCategory().getId()));
 
-        // Create a new Quiz entity from the DTO
-        Quiz quiz = new Quiz(
-                category, // Use the category
-                teacher, // Use the template teacher if no teacher ID is provided
-                quizDto.getDifficulty(),
-                quizDto.getTitle(),
-                quizDto.getDescription(),
-                quizDto.isPublished());
+    // // Create a new Quiz entity from the DTO
+    // Quiz quiz = new Quiz(
+    // category, // Use the category
+    // teacher, // Use the template teacher if no teacher ID is provided
+    // quizDto.getDifficulty(),
+    // quizDto.getTitle(),
+    // quizDto.getDescription(),
+    // quizDto.isPublished());
 
-        // if the quiz has a list of question IDs, fetch the questions and set them in
-        // the quiz
-        if (quizDto.getQuestions() != null) {
+    // // if the quiz has a list of question IDs, fetch the questions and set them
+    // in
+    // // the quiz
+    // if (quizDto.getQuestions() != null) {
 
-            for (QuestionDto qDto : quizDto.getQuestions()) {
-                Question question = new Question(
-                        qDto.getTitle(), qDto.getDescription(), qDto.getDifficulty(), quiz);
+    // for (QuestionDto qDto : quizDto.getQuestions()) {
+    // Question question = new Question(
+    // qDto.getTitle(), qDto.getDescription(), qDto.getDifficulty(), quiz);
 
-                if (qDto.getOptions() != null) {
-                    for (OptionDto oDto : qDto.getOptions()) {
-                        Option option = new Option(
-                                oDto.getText(), oDto.getCorrect(), question);
-                        question.getOptions().add(option);
-                    }
-                }
-                quiz.getQuestions().add(question);
-            }
-        }
+    // if (qDto.getOptions() != null) {
+    // for (OptionDto oDto : qDto.getOptions()) {
+    // Option option = new Option(
+    // oDto.getText(), question);
+    // question.getOptions().add(option);
+    // }
+    // }
+    // quiz.getQuestions().add(question);
+    // }
+    // }
 
-        // Save the quiz and return DTO
-        Quiz saved = quizRepository.save(quiz);
-        return toDto(saved);
-    }
+    // // Save the quiz and return DTO
+    // Quiz saved = quizRepository.save(quiz);
+    // return toDto(saved);
+    // }
 
     public QuizDto toDto(Quiz quiz) {
         // Create a CategoryDTO from the Quiz's category
@@ -181,20 +184,6 @@ public class QuizService {
         quizRepository.save(quiz);
     }
 
-    // Method to update total answer count and correct answer count for a question
-    // if boolean true
-    public ResponseEntity<String> addAnswerCount(Long questionId, boolean isCorrect) {
-
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Question not found: " + questionId));
-        question.setAnswerCount(question.getAnswerCount() + 1);
-        if (isCorrect) {
-            question.setCorrectAnswerCount(question.getCorrectAnswerCount() + 1);
-        }
-        questionRepository.save(question);
-        return ResponseEntity.ok("Answer count updated successfully.");
-    }
-
     // Method for updating review
     public void updateReview(Long id, ReviewDTO reviewDTO) {
 
@@ -211,7 +200,21 @@ public class QuizService {
         quiz.getReviews().remove(review);
         quizRepository.save(quiz);
         return ResponseEntity.ok("Review deleted successfully.");
+    }
 
+    // Method to update total answer count and validate if quiz is published
+    public ResponseEntity<?> updateQuestionAnsweredTimes(Option option) {
+        Quiz quiz = option.getQuestion().getQuiz();
+        if (!quiz.isIspublished()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Quiz is not published, cannot answer to question.");
+        }
+        Question question = option.getQuestion();
+        question.setAnswerCount(option.getQuestion().getAnswerCount() + 1);
+        question.setCorrectAnswerCount(option.getQuestion().getCorrectAnswerCount() + 1);
+        questionRepository.save(question);
+
+        return ResponseEntity.ok(option);
     }
 
     // **** CATEGORY SERVICE METHODS ****
@@ -277,7 +280,7 @@ public class QuizService {
                     // map nested options → OptionDto
                     List<OptionDto> optionDtos = q.getOptions().stream()
                             .map(o -> {
-                                OptionDto oDto = new OptionDto(o.getOption_id(), o.getText(), o.getCorrect());
+                                OptionDto oDto = new OptionDto(o.getOption_id(), o.getText());
                                 return oDto;
                             })
                             .toList();

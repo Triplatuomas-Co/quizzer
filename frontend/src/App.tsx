@@ -4,7 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import CategoriesPage from "./pages/CategoriesPage";
 import QuizzesPage from "./pages/QuizzesPage";
-
+import QuizAnswerPage from "./pages/QuizAnswerPage";
 
 export default function App() {
   return (
@@ -17,7 +17,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<QuizzesPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/quizzes/:category" element={<QuizzesPage />} />
+        <Route path="/categories/:categoryTitle/quizzes" element={<QuizzesPage />} />
+        <Route path="/quiz/:id" element={<QuizAnswerPage />} />
       </Routes>
     </div>
   );

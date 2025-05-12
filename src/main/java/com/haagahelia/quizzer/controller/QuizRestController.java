@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.haagahelia.quizzer.domain.Option;
 import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Review;
 import com.haagahelia.quizzer.domain.Teacher;
@@ -23,6 +24,7 @@ import com.haagahelia.quizzer.dto.CategoryDTO;
 import com.haagahelia.quizzer.dto.QuestionDto;
 import com.haagahelia.quizzer.dto.QuizDto;
 import com.haagahelia.quizzer.dto.ReviewDTO;
+import com.haagahelia.quizzer.repository.OptionRepository;
 import com.haagahelia.quizzer.repository.QuizRepository;
 import com.haagahelia.quizzer.repository.ReviewRepository;
 import com.haagahelia.quizzer.repository.TeacherRepository;
@@ -45,6 +47,7 @@ public class QuizRestController {
     private final TeacherRepository teacherRepository;
     private final QuizService quizService;
     private final ReviewRepository reviewRepository;
+    private final OptionRepository optionRepository;
 
     // Constants for the template teacher for testing purposes.
     private static final String TEMPLATE_TEACHER_USERNAME = "template_teacher";
@@ -52,11 +55,12 @@ public class QuizRestController {
     private static final String TEMPLATE_TEACHER_LASTNAME = "Teacher";
 
     public QuizRestController(QuizRepository quizRepository, TeacherRepository teacherRepository,
-            QuizService quizService, ReviewRepository reviewRepository) {
+            QuizService quizService, ReviewRepository reviewRepository, OptionRepository optionRepository) {
         this.quizRepository = quizRepository;
         this.teacherRepository = teacherRepository;
         this.quizService = quizService;
         this.reviewRepository = reviewRepository;
+        this.optionRepository = optionRepository;
     }
 
     // Initialize the template teacher.
@@ -108,17 +112,21 @@ public class QuizRestController {
     // ]
     // }
 
-    @Tag(name = "Quizzes", description = "Operations related to quizzes")
-    @Operation(summary = "Create a new quiz")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Quiz created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data")
-    })
-    @PostMapping
-    public ResponseEntity<QuizDto> createQuiz(@Valid @RequestBody QuizDto quizDto) {
-        QuizDto created = quizService.createQuiz(quizDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
+    // YOU CAN UNCOMMENT THIS METHOD TO ENABLE QUIZ CREATION
+
+    // @Tag(name = "Quizzes", description = "Operations related to quizzes")
+    // @Operation(summary = "Create a new quiz")
+    // @ApiResponses(value = {
+    // @ApiResponse(responseCode = "201", description = "Quiz created
+    // successfully"),
+    // @ApiResponse(responseCode = "400", description = "Invalid input data")
+    // })
+    // @PostMapping
+    // public ResponseEntity<QuizDto> createQuiz(@Valid @RequestBody QuizDto
+    // quizDto) {
+    // QuizDto created = quizService.createQuiz(quizDto);
+    // return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    // }
 
     @Tag(name = "Quizzes", description = "Operations related to quizzes")
     @Operation(summary = "Get all quizzes for the template teacher")
@@ -244,16 +252,18 @@ public class QuizRestController {
         return quizService.deleteReview(review);
     }
 
-    @Tag(name = "Question", description = "Operations related to questions")
-    @Operation(summary = "Updates answered times of Question", description = "Adds total answered times +1 to a Question and if boolean true, adds correctAnswerCount +1.")
+    @Tag(name = "Option ", description = "Operations related to Optoions")
+    @Operation(summary = "Manages functionality for answering to questions", description = "Adds total answered times +1 to a Question and updates the correct answer count if the option boolean value is true. Returns Option -object for given optionId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Updated successfully")
     })
     @PutMapping("/update-answered-times")
-    public ResponseEntity<String> updateQuestionAnsweredTimes(@RequestParam Long questionid,
-            @RequestParam boolean isCorrect) {
+    public ResponseEntity<?> updateQuestionAnsweredTimes(@RequestBody Long optionId) {
+        Option option = optionRepository.findById(optionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Option not found with id: " + optionId));
 
-        return quizService.addAnswerCount(questionid, isCorrect);
+        return quizService.updateQuestionAnsweredTimes(option);
     }
     // You can add update and delete endpoints similarly using @PutMapping and
     // @DeleteMapping.

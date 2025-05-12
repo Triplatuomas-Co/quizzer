@@ -1,18 +1,37 @@
-export type Quiz = {
-    id: number;
-    title: string;
-    description: string;
-    category: {
-      id: number;
-      title: string;
-    };
-    course: string;
-    isPublished: boolean;
-    addedOn: string;
-  };
+export interface Category {
+  category_id: number;
+  title: string;
+  description: string;
+}
 
-export type Category = {
-    title: string;
-    description: string;
-    viewQuizzes: string;
-  };
+export interface Quiz {
+  id: number;
+  category: Category;
+  teacher_id: number;
+  difficulty: number;
+  title: string;
+  description: string;
+  isPublished: boolean;
+  course?: string;
+  addedOn?: string;
+}
+
+export interface Question {
+  id: number;
+  title: string;
+  description: string;
+  difficulty: number;
+  options: Option[];
+  answerCount: number;
+  correctAnswerCount: number;
+}
+
+export interface Option {
+  id: number;
+  text: string;
+  correct: boolean;
+}
+
+export interface QuizWithQuestions extends Quiz {
+  questions: Question[];
+}

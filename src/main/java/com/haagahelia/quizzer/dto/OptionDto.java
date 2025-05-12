@@ -2,7 +2,6 @@
 package com.haagahelia.quizzer.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -15,15 +14,12 @@ public class OptionDto {
     @Size(max = 200, message = "Option text must be less than 200 characters")
     private String text;
 
-    @NotNull(message = "Correctness is required")
-    private Boolean correct;
+    public OptionDto() {
+    }
 
-    public OptionDto() {}
-
-    public OptionDto(Long id, String text, Boolean correct) {
+    public OptionDto(Long id, String text) {
         this.id = id;
         this.text = text;
-        this.correct = correct;
     }
 
     public Long getId() {
@@ -42,11 +38,4 @@ public class OptionDto {
         this.text = text;
     }
 
-    public Boolean getCorrect() {
-        return correct;
-    }
-
-    public void setCorrect(Boolean correct) {
-        this.correct = correct;
-    }
 }
