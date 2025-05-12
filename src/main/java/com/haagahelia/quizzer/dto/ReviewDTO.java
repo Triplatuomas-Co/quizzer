@@ -2,6 +2,7 @@ package com.haagahelia.quizzer.dto;
 
 import java.sql.Date;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,7 +15,7 @@ public class ReviewDTO {
     private String nickname;
 
     @Min(value = 1, message = "Rating must be at least 1")
-    @Min(value = 5, message = "Rating must be at most 5")
+    @Max(value = 5, message = "Rating must be at most 5")
     private int rating;
     @Size(max = 1000, message = "Review must be less than 1000 characters")
     private String review;

@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,7 +36,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -212,6 +211,24 @@ public class QuizRestController {
             @ApiResponse(responseCode = "201", description = "Review created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
+
+    @GetMapping("/review/{id}")
+        public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found with id: " + id));
+
+        ReviewDTO dto = new ReviewDTO(
+                review.getReview_id(),
+                review.getNickname(),
+                review.getRating(),
+                review.getReview(),
+                review.getCreated_date(),
+                review.getQuiz().getQuiz_id()
+        );
+
+        return ResponseEntity.ok(dto);
+        }
+
     @PostMapping("/review")
     public ResponseEntity<ReviewDTO> createReview(@Valid @RequestBody ReviewDTO reviewDTO,
             BindingResult bindingResult) {

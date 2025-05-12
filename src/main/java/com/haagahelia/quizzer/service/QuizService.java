@@ -1,10 +1,8 @@
 package com.haagahelia.quizzer.service;
 
-import com.haagahelia.quizzer.domain.*;
-import com.haagahelia.quizzer.dto.*;
-import com.haagahelia.quizzer.repository.*;
-
-import jakarta.annotation.PostConstruct;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +10,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.haagahelia.quizzer.domain.Category;
+import com.haagahelia.quizzer.domain.Option;
+import com.haagahelia.quizzer.domain.Question;
+import com.haagahelia.quizzer.domain.Quiz;
+import com.haagahelia.quizzer.domain.Review;
+import com.haagahelia.quizzer.domain.Teacher;
+import com.haagahelia.quizzer.dto.CategoryDTO;
+import com.haagahelia.quizzer.dto.OptionDto;
+import com.haagahelia.quizzer.dto.QuestionDto;
+import com.haagahelia.quizzer.dto.QuizDto;
+import com.haagahelia.quizzer.dto.ReviewDTO;
+import com.haagahelia.quizzer.repository.CategoryRepository;
+import com.haagahelia.quizzer.repository.QuestionRepository;
+import com.haagahelia.quizzer.repository.QuizRepository;
+import com.haagahelia.quizzer.repository.ReviewRepository;
+import com.haagahelia.quizzer.repository.TeacherRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class QuizService {
@@ -195,12 +208,12 @@ public class QuizService {
         reviewRepository.save(review);
     }
 
+    // Method to delete review
     public ResponseEntity<String> deleteReview(Review review) {
-        Quiz quiz = review.getQuiz();
-        quiz.getReviews().remove(review);
-        quizRepository.save(quiz);
+        reviewRepository.delete(review);
         return ResponseEntity.ok("Review deleted successfully.");
     }
+    
 
     // Method to update total answer count and validate if quiz is published
     public ResponseEntity<?> updateQuestionAnsweredTimes(Option option) {
