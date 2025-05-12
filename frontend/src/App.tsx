@@ -17,7 +17,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<QuizzesPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/categories/:categoryTitle/quizzes" element={<QuizzesPage />} />
+        <Route path="/quizzes/:category" element={<QuizzesPage />} />
       </Routes>
     </div>
   );

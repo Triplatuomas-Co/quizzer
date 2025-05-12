@@ -1,4 +1,3 @@
-/* Main root container */
 
 /* Navbar at top */
 .navbar {
@@ -6,7 +5,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: black; /* Tämä on ok, koska se ei vaikuta AG Gridin taustaan */
+  background-color: #333; 
   color: white;
   padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
@@ -18,22 +17,88 @@
   color: white;
   text-decoration: none;
   margin: 0 1rem;
-  font-weight: 500;
+  font-weight: 600; 
+  font-size: 1.1rem; 
+  padding: 0.5rem 1rem; 
+  transition: color 0.3s, border-bottom 0.3s; 
 }
 
 .navbar a:hover {
-  text-decoration: underline;
+  color: #428dfd; 
 }
 
 /* Space below navbar */
 .app-container {
-  padding-top: 70px;
+  padding-top: 40px;
   text-align: center;
+  background-color: #ffffff;
+  min-height: 100vh;
 }
 
-.ag-cell {
-  text-align: left !important;
+/* Card container */
+.quiz-card-container {
+  display: flex;
+  flex-direction: column; 
+  gap: 2rem; 
+  align-items: center; 
+  padding: 2rem;
 }
 
+/* Individual card */
+.quiz-card {
+  background-color: #f8f9fa; 
+  border: 1px solid #dee2e6; 
+  border-radius: 12px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  padding: 1.5rem;
+  width: 600px;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s; 
+}
 
+.quiz-card:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+}
 
+/* Card title */
+.quiz-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.6rem;
+  color: #212529; 
+}
+
+/* Card description */
+.quiz-card p {
+  margin: 0.5rem 0;
+  color: #495057; 
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Action buttons */
+.quiz-card button {
+  background-color: #007bff; 
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  margin-top: 1rem;
+}
+
+.quiz-card button:hover {
+  background-color: #0056b3; 
+}
+
+/* Add spacing between buttons */
+.quiz-card button + button {
+  margin-left: 0.5rem;
+}
+
+h1 {
+  color: #212529; 
+  font-size: 2rem; 
+  text-align: center; 
+}

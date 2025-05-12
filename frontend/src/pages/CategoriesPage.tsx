@@ -1,4 +1,4 @@
-import CategoryTable from "../components/CategoryTable";
+import CategoryList from "../components/CategoryList";
 import { useFetch } from "../hooks/useFetch";
 import { Category } from "../types";
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
@@ -12,9 +12,10 @@ export default function CategoriesPage() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div>
+    
+    <div className="app-container">
       <h1>Categories</h1>
-      <CategoryTable categories={categories} />
+      <CategoryList categories={categories} />
     </div>
   );
 }
