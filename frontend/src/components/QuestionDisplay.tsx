@@ -50,7 +50,18 @@ export default function QuestionDisplay({
         </Typography>
 
         {question.description && (
-          <Typography variant="body1" color="text.secondary" paragraph>
+          <Typography 
+            variant="body1" 
+            color="text.secondary" 
+            sx={{ 
+              whiteSpace: 'pre-wrap',
+              textAlign: 'left',
+              lineHeight: 1.6,
+              py: 1,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word'
+            }}
+          >
             {question.description}
           </Typography>
         )}
@@ -104,4 +115,4 @@ export default function QuestionDisplay({
       </CardContent>
     </Card>
   );
-} 
+}

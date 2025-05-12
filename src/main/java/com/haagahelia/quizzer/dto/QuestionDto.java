@@ -20,7 +20,7 @@ public class QuestionDto {
     @Size(max = 200, message = "Title must be less than 200 characters")
     private String title;
 
-    @Size(max = 1000, message = "Description must be less than 1000 characters")
+    @Size(max = 10000, message = "Description must be less than 10 000 characters")
     private String description;
 
     @Min(value = 1, message = "Rating must be at least 1")

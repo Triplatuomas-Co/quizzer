@@ -6,6 +6,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { padding-top: 20px; } /* Add some padding at the top */
+        .preserve-whitespace {
+            white-space: pre-wrap; /* This CSS property preserves newlines and spaces */
+        }
     </style>
 </head>
 <body>
@@ -39,7 +42,7 @@
             <h4 th:text="'Question ' + ${qStat.count} + ': ' + ${question.title}">Question Title</h4>
         </div>
         <div class="card-body">
-            <p class="card-text" th:text="${question.description}">Question Description</p>
+            <p class="card-text preserve-whitespace" th:text="${question.description}">Question Description</p>
             <ul class="list-group list-group-flush">
                 <li th:each="option : ${question.options}" class="list-group-item">
                     <span th:text="${option.text}">Option text</span>
