@@ -14,6 +14,7 @@ export interface Quiz {
   isPublished: boolean;
   course?: string;
   addedOn?: string;
+  questions?: Question[];
 }
 
 export interface Question {

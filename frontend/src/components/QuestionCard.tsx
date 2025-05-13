@@ -20,7 +20,7 @@ export default function QuestionCard({ quiz }: QuestionCardProps) {
       <Typography variant="h4" gutterBottom>
         {quiz.title}
       </Typography>
-      <Typography variant="body1" color="text.secondary" paragraph>
+      <Typography variant="body1" color="text.secondary">
         {quiz.description}
       </Typography>
       <Divider sx={{ my: 3 }} />

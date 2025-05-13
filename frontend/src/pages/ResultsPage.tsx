@@ -1,31 +1,32 @@
+import React from "react";
 import { useParams } from "react-router-dom";
-import { useFetch } from "../hooks/useFetch";
 import { QuizWithQuestions } from "../types";
-import QuestionCard from "../components/QuestionCard";
+import QuizResultsCard from "../components/Results/QuizResultsCard";
 import { Container, CircularProgress, Alert, Paper } from '@mui/material';
+import { useFetch } from "../hooks/useFetch";
 
-export default function QuizAnswerPage() {
+const ResultsPage: React.FC = () => {
   const { id } = useParams();
-  const { data: quiz, loading, error } = useFetch<QuizWithQuestions>(`/api/quiz/${id}`);
+  const { data: quizData, loading, error } = useFetch<QuizWithQuestions>(`/api/quiz/${id}`);
 
   if (loading) return (
     <Container maxWidth="lg" sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
       <CircularProgress />
     </Container>
   );
-
+  
   if (error) return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Alert severity="error" sx={{ mb: 2 }}>
-        Error: {error}
+        {error}
       </Alert>
     </Container>
   );
-
-  if (!quiz) return (
+  
+  if (!quizData) return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Alert severity="warning" sx={{ mb: 2 }}>
-        Quiz not found
+        No quiz data available.
       </Alert>
     </Container>
   );
@@ -33,8 +34,10 @@ export default function QuizAnswerPage() {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
-        <QuestionCard quiz={quiz} />
+        <QuizResultsCard quizName={quizData.title} questions={quizData.questions} />
       </Paper>
     </Container>
   );
-} 
+};
+
+export default ResultsPage;

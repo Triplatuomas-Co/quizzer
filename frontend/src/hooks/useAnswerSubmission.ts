@@ -18,20 +18,23 @@ export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/quiz/${quizId}/question/${questionId}/answer`, {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/api/quiz/update-answered-times", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        body: JSON.stringify({ optionId: selectedOptionId }),
+        body: JSON.stringify(selectedOptionId), // vain optionId, ei objektia
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit answer');
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error("Failed to submit answer");
       }
 
-      const result = await response.json();
-      setAnsweredQuestions(prev => ({ ...prev, [questionId]: true }));
+      const result = await response.json(); // oletetaan: { correct: true/false }
+      setAnsweredQuestions((prev) => ({ ...prev, [questionId]: true }));
 
       if (result.correct) {
         showNotification("Correct answer!", "success");
@@ -39,15 +42,15 @@ export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
         showNotification("Incorrect answer. Try again!", "error");
       }
     } catch (error) {
-      console.error('Error submitting answer:', error);
+      console.error("Error submitting answer:", error);
       showNotification("Error submitting answer", "error");
     }
   };
 
   const handleAnswerSelect = (questionId: number, optionId: number) => {
-    setSelectedAnswers(prev => ({
+    setSelectedAnswers((prev) => ({
       ...prev,
-      [questionId]: optionId
+      [questionId]: optionId,
     }));
   };
 
@@ -55,6 +58,6 @@ export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
     selectedAnswers,
     answeredQuestions,
     handleAnswerSubmit,
-    handleAnswerSelect
+    handleAnswerSelect,
   };
-} 
+}

@@ -8,6 +8,7 @@ import QuizAnswerPage from "./pages/QuizAnswerPage";
 import ReviewPage from "./pages/ReviewPage";
 import ReviewListPage from "./pages/ReviewListPage";
 import EditReviewPage from "./pages/EditReviewPage";
+import ResultsPage from "./pages/ResultsPage";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/quiz/:id/review" element={<ReviewPage />} />
         <Route path="/quiz/:id/reviews" element={<ReviewListPage />} />
         <Route path="/editreview/:id" element={<EditReviewPage />} />
+        <Route path="/quiz/:id/results" element={<ResultsPage />} />
       </Routes>
     </div>
   );
