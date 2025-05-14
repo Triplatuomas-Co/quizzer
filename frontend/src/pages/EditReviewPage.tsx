@@ -86,6 +86,13 @@ export default function EditReviewPage() {
               value={num.toString()}
               control={<Radio />}
               label={num}
+              sx={{
+                '& .MuiFormControlLabel-label': {
+                  color: 'text.primary',
+                  fontSize: '1rem',
+                  display: 'inline',
+                }
+              }}
             />
           ))}
         </RadioGroup>
