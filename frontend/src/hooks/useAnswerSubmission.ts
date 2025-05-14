@@ -24,7 +24,7 @@ export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
-        body: JSON.stringify(selectedOptionId), // vain optionId, ei objektia
+        body: JSON.stringify(selectedOptionId), 
       });
 
       if (!response.ok) {
@@ -33,7 +33,7 @@ export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
         throw new Error("Failed to submit answer");
       }
 
-      const result = await response.json(); // oletetaan: { correct: true/false }
+      const result = await response.json(); 
       setAnsweredQuestions((prev) => ({ ...prev, [questionId]: true }));
 
       if (result.correct) {

@@ -1,4 +1,4 @@
-import { Question as QuizQuestion, Option as QuizOption } from "../types";
+import { Question as QuizQuestion, Option as QuizOption, QuizWithQuestions } from "../types";
 import {
   Card,
   CardContent,
@@ -16,6 +16,7 @@ interface QuestionDisplayProps {
   isAnswered: boolean;
   onAnswerSelect: (questionId: number, optionId: number) => void;
   onSubmit: (questionId: number) => void;
+  quiz: QuizWithQuestions;
 }
 
 export default function QuestionDisplay({
@@ -23,7 +24,8 @@ export default function QuestionDisplay({
   selectedAnswer,
   isAnswered,
   onAnswerSelect,
-  onSubmit
+  onSubmit,
+  quiz
 }: QuestionDisplayProps) {
   const getDifficultyText = (difficulty: number): string => {
     switch (difficulty) {
@@ -49,26 +51,16 @@ export default function QuestionDisplay({
           {question.title}
         </Typography>
 
-        {question.description && (
-          <Typography 
-            variant="body1" 
-            color="text.secondary" 
-            sx={{ 
-              whiteSpace: 'pre-wrap',
-              textAlign: 'left',
-              lineHeight: 1.6,
-              py: 1,
-              wordBreak: 'break-word',
-              overflowWrap: 'break-word'
-            }}
-          >
-            {question.description}
-          </Typography>
-        )}
+       
+        
 
         <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
-          Difficulty: {getDifficultyText(question.difficulty)}
+        Question {quiz.questions.findIndex(q => q.id === question.id) + 1} of {quiz.questions.length} –
+        Difficulty: {getDifficultyText(question.difficulty)}
         </Typography>
+
+
+        
 
         <RadioGroup
           name={`question-${question.id}`}

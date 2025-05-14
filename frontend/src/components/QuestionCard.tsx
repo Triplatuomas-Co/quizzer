@@ -23,6 +23,10 @@ export default function QuestionCard({ quiz }: QuestionCardProps) {
       <Typography variant="body1" color="text.secondary">
         {quiz.description}
       </Typography>
+      <Typography variant="body2" color="text.secondary">
+        Questions: {quiz.questions.length}  - 
+          Category: {quiz.category.title}
+      </Typography>
       <Divider sx={{ my: 3 }} />
 
       {quiz.questions.map((question) => (
@@ -33,6 +37,7 @@ export default function QuestionCard({ quiz }: QuestionCardProps) {
           isAnswered={answeredQuestions[question.id]}
           onAnswerSelect={handleAnswerSelect}
           onSubmit={handleAnswerSubmit}
+          quiz={quiz}
         />
       ))}
     </Box>
