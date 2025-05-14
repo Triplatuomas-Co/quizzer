@@ -190,7 +190,8 @@ public class QuizService {
     // toReview method to convert ReviewDTO to Review object and save it to the quiz
     public void toReview(ReviewDTO rDTO) {
 
-        Quiz quiz = quizRepository.findById(rDTO.getQuiz_id()).get();
+        Quiz quiz = quizRepository.findById(rDTO.getQuiz_id()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Quiz not found: " + rDTO.getQuiz_id()));
         Review review = new Review(rDTO.getNickname(), rDTO.getRating(), rDTO.getReview(),
                 quiz);
         quiz.getReviews().add(review);
@@ -213,7 +214,6 @@ public class QuizService {
         reviewRepository.delete(review);
         return ResponseEntity.ok("Review deleted successfully.");
     }
-    
 
     // Method to update total answer count and validate if quiz is published
     public ResponseEntity<?> updateQuestionAnsweredTimes(Option option) {
