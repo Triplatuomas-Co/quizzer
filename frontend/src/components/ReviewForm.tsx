@@ -72,7 +72,17 @@ export default function ReviewForm({ quizId, onSubmit }: ReviewFormProps) {
           minRows={3}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          sx={{ mb: 2 }}
+          inputProps={{ 
+            maxLength: 10000,
+          }}
+          helperText={`${comment.length} / 10000`}
+          sx={{ 
+            mb: 2,
+            '& textarea': {
+              resize: 'vertical',
+              overflow: 'auto',
+            }
+          }}
         />
         <Button variant="contained" type="submit">
           Submit

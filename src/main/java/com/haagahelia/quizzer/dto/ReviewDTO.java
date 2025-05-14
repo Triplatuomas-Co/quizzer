@@ -17,7 +17,7 @@ public class ReviewDTO {
     @Min(value = 1, message = "Rating must be at least 1")
     @Max(value = 5, message = "Rating must be at most 5")
     private int rating;
-    @Size(max = 1000, message = "Review must be less than 1000 characters")
+    @Size(max = 10000, message = "Review must be less than 1000 characters")
     private String review;
     private Date created_date;
     @NotBlank(message = "Quiz ID is required")

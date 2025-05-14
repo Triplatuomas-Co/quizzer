@@ -23,7 +23,7 @@ public class Question {
     private int difficulty;
     private String title;
 
-    @Column(length = 10000)
+    @Column(length = 10000) 
     private String description;
 
     @JsonIgnore

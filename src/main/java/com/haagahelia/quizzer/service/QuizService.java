@@ -140,7 +140,7 @@ public class QuizService {
 
         // using constructor to create QuizDto object and return it
         return new QuizDto(quiz.getQuiz_id(), categoryDto, quiz.getTeacher().getTeacher_id(),
-                quiz.getDificulty(),
+                quiz.getDifficulty(),
                 quiz.getTitle(), quiz.getDescription(),
                 quiz.isIspublished(), questionDtos);
     }
@@ -149,7 +149,7 @@ public class QuizService {
         Quiz quiz = new Quiz();
         quiz.setTitle(quizDto.getTitle());
         quiz.setDescription(quizDto.getDescription());
-        quiz.setDificulty(quizDto.getDifficulty());
+        quiz.setDifficulty(quizDto.getDifficulty());
         quiz.setIspublished(quizDto.isPublished());
 
         // Handle category conversion from DTO to Entity

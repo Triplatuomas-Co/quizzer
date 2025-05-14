@@ -86,7 +86,7 @@ erDiagram
     QUIZ {
         Long quiz_id
         String category
-        int dificulty
+        int difficulty
         String title
         String description
         boolean ispublished

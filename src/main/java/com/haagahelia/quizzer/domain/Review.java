@@ -2,6 +2,7 @@ package com.haagahelia.quizzer.domain;
 
 import java.sql.Date;
 
+import jakarta.persistence.Column; 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,8 @@ public class Review {
     private Long review_id;
     private String nickname;
     private int rating;
+
+    @Column(length = 10000)
     private String review;
     private Date created_date = new Date(System.currentTimeMillis());
     @ManyToOne
@@ -25,7 +28,7 @@ public class Review {
 
     public Review() {
     }
-
+    
     public Review(String nickname, int rating, String review, Quiz quiz) {
         this.nickname = nickname;
         this.rating = rating;

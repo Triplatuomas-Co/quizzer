@@ -89,7 +89,7 @@ public class QuizRestController {
     // Example JSON payload:
     // {
     // "category": "General",
-    // "dificulty": 1,
+    // "difficulty": 1,
     // "title": "Sample Quiz",
     // "description": "This quiz tests basic Java concepts.",
     // "ispublished": false,

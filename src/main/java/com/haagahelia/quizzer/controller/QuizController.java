@@ -193,6 +193,7 @@ public class QuizController {
     public String updateQuiz(@PathVariable Long id, @Valid @ModelAttribute("quiz") Quiz quiz, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allCategories", quizService.getAllCategoryDTOs()); // Repopulate categories on error
+            model.addAttribute("quiz", quiz); 
             return "editquiz";
         }
         Optional<Quiz> existingQuizOpt = quizRepository.findById(id);
@@ -203,6 +204,7 @@ public class QuizController {
             existingQuiz.setTitle(quiz.getTitle());
             existingQuiz.setDescription(quiz.getDescription());
             existingQuiz.setCategory(quiz.getCategory()); // Ensure category is updated
+            existingQuiz.setDifficulty(quiz.getDifficulty()); // Set the difficulty
             existingQuiz.setIspublished(quiz.isIspublished());
 
             // Save the updated quiz

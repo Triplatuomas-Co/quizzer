@@ -29,7 +29,19 @@ export default function ReviewCard({
         {review.nickname}
       </Typography>
       <Typography color="text.primary">Rating: {review.rating}/5</Typography>
-      <Typography color="text.primary">{review.review}</Typography>
+      <Typography 
+        color="text.primary"
+        sx={{ 
+          whiteSpace: 'pre-wrap',
+          textAlign: 'left',
+          lineHeight: 1.6,
+          py: 1,
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word'
+        }}
+      >
+        {review.review}
+      </Typography>
       <Typography variant="caption" color="text.secondary">
         Written on: {review.created_date}
       </Typography>

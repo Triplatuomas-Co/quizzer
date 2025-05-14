@@ -95,10 +95,22 @@ export default function EditReviewPage() {
           multiline
           minRows={3}
           value={reviewData.review}
-          onChange={(e) =>
+          onChange={e =>
             setReviewData({ ...reviewData, review: e.target.value })
           }
-          sx={{ mb: 2 }}
+          slotProps={{
+            htmlInput: {
+              maxLength: 10000
+            }
+          }}
+          helperText={`${reviewData.review.length} / 10000`}
+          sx={{
+            mb: 2,
+            '& textarea': {
+              resize: 'vertical',
+              overflow: 'auto'
+            }
+          }}
         />
         <Button variant="contained" type="submit">
           Save changes

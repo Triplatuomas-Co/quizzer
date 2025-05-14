@@ -25,7 +25,7 @@ public class Quiz {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-    private int dificulty;
+    private int difficulty;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quiz")
     private List<Question> questions = new ArrayList<>();
@@ -39,11 +39,11 @@ public class Quiz {
     public Quiz() {
     }
 
-    public Quiz(Category category, Teacher teacher, int dificulty, String title,
+    public Quiz(Category category, Teacher teacher, int difficulty, String title,
             String description, boolean ispublished) {
         this.category = category;
         this.teacher = teacher;
-        this.dificulty = dificulty;
+        this.difficulty = difficulty;
         this.title = title;
         this.description = description;
         this.ispublished = ispublished;
@@ -69,12 +69,12 @@ public class Quiz {
         this.teacher = teacher;
     }
 
-    public int getDificulty() {
-        return dificulty;
+    public int getDifficulty() {
+        return difficulty;
     }
 
-    public void setDificulty(int dificulty) {
-        this.dificulty = dificulty;
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 
     public List<Question> getQuestions() {
@@ -119,7 +119,7 @@ public class Quiz {
 
     @Override
     public String toString() {
-        return "Quiz [id=" + quiz_id + ", dificulty=" + dificulty
+        return "Quiz [id=" + quiz_id + ", difficulty=" + difficulty
                 + ", title=" + title + ", description=" + description + ", ispublished="
                 + ispublished + "]";
     }
