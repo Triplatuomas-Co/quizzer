@@ -224,7 +224,9 @@ public class QuizService {
         }
         Question question = option.getQuestion();
         question.setAnswerCount(option.getQuestion().getAnswerCount() + 1);
-        question.setCorrectAnswerCount(option.getQuestion().getCorrectAnswerCount() + 1);
+        if (option.getCorrect()) {
+            question.setCorrectAnswerCount(option.getQuestion().getCorrectAnswerCount() + 1);
+        }
         questionRepository.save(question);
 
         return ResponseEntity.ok(option);
