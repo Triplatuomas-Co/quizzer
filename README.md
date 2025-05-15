@@ -19,10 +19,16 @@ This project is developed as part of the "Introduction to software development p
 [Link](https://github.com/orgs/Triplatuomas-Co/projects/1/views/1)
 
 ## Rahti-url
-[Link](https://quizzer-git-quizzer-triplatuomas.2.rahtiapp.fi/)
 
-## Flinga 
+[Link](https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/)
+
+## Flinga
+
 [Link](https://edu.flinga.fi/s/ENKEQKR)
+
+## Swagger UI
+
+[Link](https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/swagger-ui/index.html)
 
 ## User Instructions
 
@@ -71,12 +77,31 @@ cd quizzer
 mvnw.cmd spring-boot:run
 ```
 
+### Backend - Test
+
+Java version 17.0.12
+
+**MacOS & Windows**  
+Terminal commands:
+
+```bash
+cd quizzer
+```
+
+```bash
+./mvnw test
+```
+
 ## Entity Relationship Diagram
+
 ```mermaid
 erDiagram
     TEACHER ||--o{ QUIZ : creates
     QUIZ ||--o{ QUESTION : contains
     QUESTION ||--o{ OPTION : has
+    QUIZ }o--|| CATEGORY : belongs to
+    QUIZ ||--o{ REVIEW : has
+
 
     TEACHER {
         Long teacher_id
@@ -94,19 +119,38 @@ erDiagram
         String description
         boolean ispublished
         Long teacher_id
+        Long category_id
+    }
+
+    CATEGORY {
+        Long category_id
+        String title
+        String description
     }
 
     QUESTION {
         Long question_id
+        int difficulty
         String title
         String description
+        int answerCount
+        int correctAnswerCount
         Long quiz_id
     }
 
     OPTION {
         Long option_id
         String text
-        boolean iscorrect
+        boolean correct
         Long question_id
+    }
+
+    REVIEW {
+        Long review_id
+        String nickname
+        int rating
+        String review
+        Date created_date
+        Long quiz_id
     }
 ```
