@@ -21,6 +21,9 @@ This project is developed as part of the "Introduction to software development p
 ## Rahti-url
 [Link](https://quizzer-git-quizzer-triplatuomas.2.rahtiapp.fi/)
 
+## Flinga 
+[Link](https://edu.flinga.fi/s/ENKEQKR)
+
 ## User Instructions
 
 ## Frontend
