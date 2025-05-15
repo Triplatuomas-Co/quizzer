@@ -55,7 +55,7 @@ npm run dev
 
 Java version 17.0.12
 
-**MacOS**  
+**MacOS & Windows**  
 Terminal commands:
 
 ```bash
@@ -64,17 +64,6 @@ cd quizzer
 
 ```bash
 ./mvnw spring-boot:run
-```
-
-**Windows**  
-Terminal commands:
-
-```cmd
-cd quizzer
-```
-
-```cmd
-mvnw.cmd spring-boot:run
 ```
 
 ### Backend - Test
