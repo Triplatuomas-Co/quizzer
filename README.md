@@ -99,7 +99,7 @@ erDiagram
     TEACHER ||--o{ QUIZ : creates
     QUIZ ||--o{ QUESTION : contains
     QUESTION ||--o{ OPTION : has
-    QUIZ }o--|| CATEGORY : belongs to
+    CATEGORY ||--o{ QUIZ : belongs to
     QUIZ ||--o{ REVIEW : has
 
 
