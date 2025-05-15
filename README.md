@@ -97,11 +97,10 @@ cd quizzer
 ```mermaid
 erDiagram
     TEACHER ||--o{ QUIZ : creates
+    CATEGORY ||--o{ QUIZ : has
     QUIZ ||--o{ QUESTION : contains
     QUESTION ||--o{ OPTION : has
-    CATEGORY ||--o{ QUIZ : belongs to
     QUIZ ||--o{ REVIEW : has
-
 
     TEACHER {
         Long teacher_id
@@ -113,7 +112,6 @@ erDiagram
 
     QUIZ {
         Long quiz_id
-        String category
         int difficulty
         String title
         String description
