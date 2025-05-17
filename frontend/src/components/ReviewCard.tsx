@@ -1,4 +1,4 @@
-import { Box, Typography, Divider, Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 
 interface Review {
@@ -13,61 +13,55 @@ interface Review {
 interface ReviewCardProps {
   review: Review;
   onDelete?: (id: number) => void;
-  currentUserNickname: string | null;
 }
 
-export default function ReviewCard({
-  review,
-  onDelete,
-  currentUserNickname,
-}: ReviewCardProps) {
-  const isOwner = review.nickname === currentUserNickname;
-
+export default function ReviewCard({ review, onDelete }: ReviewCardProps) {
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography fontWeight="bold" color="text.primary">
-        {review.nickname}
-      </Typography>
-      <Typography color="text.primary">Rating: {review.rating}/5</Typography>
-      <Typography 
-        color="text.primary"
-        sx={{ 
-          whiteSpace: 'pre-wrap',
-          textAlign: 'left',
-          lineHeight: 1.6,
-          py: 1,
-          wordBreak: 'break-word',
-          overflowWrap: 'break-word'
-        }}
-      >
-        {review.review}
-      </Typography>
-      <Typography variant="caption" color="text.secondary">
-        Written on: {review.created_date}
-      </Typography>
+    <div
+      className="quiz-card"
+      style={{
+        width: "90%",
+        maxWidth: "600px",
+        margin: "1rem auto",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        marginBottom: "1rem",
+        padding: "1rem",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+      }}
+    >
+      <div style={{ flexGrow: 1 }}>
+        <h2 style={{ marginBottom: "0.5rem" }}>{review.nickname}</h2>
+        <p style={{ margin: 0, fontWeight: "bold" }}>
+          Rating: {review.rating}/5
+        </p>
+        <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+          {review.review}
+        </p>
+        <p style={{ fontSize: "0.8rem", color: "#666" }}>
+          Written on: {review.created_date}
+        </p>
+      </div>
 
-      {isOwner && (
-        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-          <Button
-            variant="outlined"
-            color="error"
-            size="small"
-            onClick={() => onDelete?.(review.review_id)}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            component={Link}
-            to={`/editreview/${review.review_id}`}
-          >
-            Edit
-          </Button>
-        </Stack>
-      )}
-      <Divider sx={{ mt: 2 }} />
-    </Box>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <Button
+          variant="outlined"
+          color="primary"
+          component={Link}
+          to={`/editreview/${review.review_id}`}
+        >
+          Edit
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => onDelete?.(review.review_id)}
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
   );
 }
