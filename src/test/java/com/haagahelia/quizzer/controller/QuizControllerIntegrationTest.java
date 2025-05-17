@@ -1,8 +1,6 @@
 package com.haagahelia.quizzer.controller;
 
 import com.haagahelia.quizzer.domain.Category;
-import com.haagahelia.quizzer.domain.Option;
-import com.haagahelia.quizzer.domain.Question;
 import com.haagahelia.quizzer.domain.Quiz;
 import com.haagahelia.quizzer.domain.Teacher;
 import com.haagahelia.quizzer.repository.CategoryRepository;
@@ -21,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
