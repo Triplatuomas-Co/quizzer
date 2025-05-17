@@ -6,8 +6,9 @@ import { Container, CircularProgress, Alert, Paper } from '@mui/material';
 
 export default function QuizAnswerPage() {
   const { id } = useParams();
+  const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
   const { data: quiz, loading, error } = useFetch<QuizWithQuestions>(
-    `https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/api/quiz/${id}`
+    `${baseUrl}/${id}`
   );
 
   if (loading) return (

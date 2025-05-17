@@ -5,6 +5,7 @@ export function useQuizReviews(quizId: string | undefined) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
 
   useEffect(() => {
     if (!quizId) {
@@ -40,7 +41,7 @@ export function useQuizReviews(quizId: string | undefined) {
     setReviews((prevReviews) => prevReviews.filter((r) => r.review_id !== reviewId));
 
     try {
-      const res = await fetch(`https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/api/quiz/review/${reviewId}`, {
+      const res = await fetch(`${baseUrl}/review/${reviewId}`, {
         method: "DELETE",
       });
       if (!res.ok) {

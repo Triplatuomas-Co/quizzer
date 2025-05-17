@@ -5,10 +5,11 @@ interface UseAnswerSubmissionProps {
   quizId: number;
 }
 
-export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
+export function useAnswerSubmission({}: UseAnswerSubmissionProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [answeredQuestions, setAnsweredQuestions] = useState<Record<number, boolean>>({});
   const { showNotification } = useNotification();
+  const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
 
   const handleAnswerSubmit = async (questionId: number) => {
     const selectedOptionId = selectedAnswers[questionId];
@@ -18,7 +19,7 @@ export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
     }
 
     try {
-      const response = await fetch("https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/api/quiz/update-answered-times", {
+      const response = await fetch(`${baseUrl}/update-answered-times`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
