@@ -13,6 +13,7 @@ interface Review {
 interface ReviewCardProps {
   review: Review;
   onDelete?: (id: number) => void;
+  currentUserNickname: string | null;
 }
 
 export default function ReviewCard({ review, onDelete }: ReviewCardProps) {
