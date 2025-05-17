@@ -6,7 +6,8 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export default function CategoriesPage() {
-  const { data: categories, loading, error } = useFetch<Category>("http://localhost:8080/api/quiz/categories");
+  const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+  const { data: categories, loading, error } = useFetch<Category[]>(`${baseUrl}/categories`);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -15,7 +16,7 @@ export default function CategoriesPage() {
     
     <div className="app-container">
       <h1>Categories</h1>
-      <CategoryList categories={categories} />
+      <CategoryList categories={categories ?? []} />
     </div>
   );
 }

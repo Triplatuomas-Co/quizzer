@@ -6,7 +6,9 @@ import { Container, CircularProgress, Alert, Paper } from '@mui/material';
 
 export default function QuizAnswerPage() {
   const { id } = useParams();
-  const { data: quiz, loading, error } = useFetch<QuizWithQuestions>(`/api/quiz/${id}`);
+  const { data: quiz, loading, error } = useFetch<QuizWithQuestions>(
+    `https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/api/quiz/${id}`
+  );
 
   if (loading) return (
     <Container maxWidth="lg" sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>

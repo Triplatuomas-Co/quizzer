@@ -7,7 +7,8 @@ import { useFetch } from "../hooks/useFetch";
 
 const ResultsPage: React.FC = () => {
   const { id } = useParams();
-  const { data: quizData, loading, error } = useFetch<QuizWithQuestions>(`/api/quiz/${id}`);
+  const quizResultsUrl = `https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/api/quiz/${id}`;
+  const { data: quizData, loading, error } = useFetch<QuizWithQuestions>(quizResultsUrl);
 
   if (loading) return (
     <Container maxWidth="lg" sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>

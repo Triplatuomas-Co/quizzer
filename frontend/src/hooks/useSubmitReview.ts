@@ -7,7 +7,8 @@ interface ReviewData {
 
 export default function useSubmitReview() {
   return async (review: ReviewData) => {
-    const response = await fetch("/api/quiz/review", {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+    const response = await fetch(`${baseUrl}/review`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -9,21 +9,20 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 export default function QuizzesPage() {
   const { category } = useParams<{ category: string }>(); // Get the category from the URL parameters
 
-  let endpoint = "http://localhost:8080/api/quiz/published-list"; 
-
+  const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+  let endpoint = `${baseUrl}/published-list`;
   if (category) {
-    endpoint = `http://localhost:8080/api/quiz/published-list/${category}`; // If a category is provided, use it to filter quizzes
+    endpoint = `${baseUrl}/published-list/${category}`;
   }
-
-  const { data: quizzes, loading, error } = useFetch<Quiz>(endpoint);
-
+  const { data: quizzes, loading, error } = useFetch<Quiz[]>(endpoint);
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="app-container">
       <h1>{category ? `Quizzes in ${category}` : "Quizzes"}</h1>
-      <QuizList quizzes={quizzes} />
+      <QuizList quizzes={quizzes ?? []} />
     </div>
   );
 }

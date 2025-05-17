@@ -18,7 +18,7 @@ export function useAnswerSubmission({ quizId }: UseAnswerSubmissionProps) {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/quiz/update-answered-times", {
+      const response = await fetch("https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/api/quiz/update-answered-times", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

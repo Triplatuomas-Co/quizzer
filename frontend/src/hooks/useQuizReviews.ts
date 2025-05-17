@@ -17,7 +17,8 @@ export function useQuizReviews(quizId: string | undefined) {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/quiz/${quizId}/reviews`);
+        const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+        const res = await fetch(`${baseUrl}/${quizId}/reviews`);
         if (!res.ok) {
           throw new Error(`Failed to fetch reviews: ${res.status}`);
         }
@@ -39,7 +40,7 @@ export function useQuizReviews(quizId: string | undefined) {
     setReviews((prevReviews) => prevReviews.filter((r) => r.review_id !== reviewId));
 
     try {
-      const res = await fetch(`/api/quiz/review/${reviewId}`, {
+      const res = await fetch(`https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/api/quiz/review/${reviewId}`, {
         method: "DELETE",
       });
       if (!res.ok) {

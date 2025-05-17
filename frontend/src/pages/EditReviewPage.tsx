@@ -24,10 +24,11 @@ export default function EditReviewPage() {
   const navigate = useNavigate();
   const [reviewData, setReviewData] = useState<Review | null>(null);
   const [loading, setLoading] = useState(true);
+  const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
 
   useEffect(() => {
     const fetchReview = async () => {
-      const res = await fetch(`/api/quiz/review/${id}`);
+      const res = await fetch(`${baseUrl}/review/${id}`);
       if (res.ok) {
         const data = await res.json();
         setReviewData(data);
@@ -41,7 +42,7 @@ export default function EditReviewPage() {
     e.preventDefault();
     if (!reviewData) return;
 
-    const res = await fetch(`/api/quiz/review/${reviewData.review_id}`, {
+    const res = await fetch(`${baseUrl}/review/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(reviewData),
