@@ -20,7 +20,7 @@ export default function QuestionCard({ quiz }: QuestionCardProps) {
       <Typography variant="h4" gutterBottom>
         {quiz.title}
       </Typography>
-      <Typography variant="body1" color="text.secondary">
+      <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'left' }}>
         {quiz.description}
       </Typography>
       <Typography variant="body2" color="text.secondary">

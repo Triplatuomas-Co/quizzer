@@ -51,16 +51,16 @@ export default function QuestionDisplay({
           {question.title}
         </Typography>
 
-       
-        
+        {question.description && (
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'left' }}>
+            {question.description}
+          </Typography>
+        )}
 
         <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
         Question {quiz.questions.findIndex(q => q.id === question.id) + 1} of {quiz.questions.length} –
         Difficulty: {getDifficultyText(question.difficulty)}
         </Typography>
-
-
-        
 
         <RadioGroup
           name={`question-${question.id}`}
@@ -82,7 +82,9 @@ export default function QuestionDisplay({
                 '&:hover': {
                   backgroundColor: 'action.hover',
                   borderRadius: 1
-                }
+                },
+                textAlign: 'left',
+                width: '100%'
               }}
             />
           ))}
