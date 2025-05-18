@@ -52,7 +52,19 @@ export default function QuestionDisplay({
         </Typography>
 
         {question.description && (
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'left' }}>
+          <Typography 
+            variant="body1" 
+            color="text.secondary" 
+            sx={{ 
+              whiteSpace: 'pre-wrap',
+              textAlign: 'left',
+              lineHeight: 1.6,
+              py: 1,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              mb: 2 // Retaining the margin bottom from the previous state
+            }}
+          >
             {question.description}
           </Typography>
         )}
