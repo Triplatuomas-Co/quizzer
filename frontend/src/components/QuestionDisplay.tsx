@@ -53,8 +53,23 @@ export default function QuestionDisplay({
           {question.title}
         </Typography>
 
-       
-        
+        {question.description && (
+          <Typography 
+            variant="body1" 
+            color="text.secondary" 
+            sx={{ 
+              whiteSpace: 'pre-wrap',
+              textAlign: 'left',
+              lineHeight: 1.6,
+              py: 1,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              mb: 2 // Retaining the margin bottom from the previous state
+            }}
+          >
+            {question.description}
+          </Typography>
+        )}
 
         <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
         Question {quiz.questions.findIndex(q => q.id === question.id) + 1} of {quiz.questions.length} –
@@ -62,7 +77,7 @@ export default function QuestionDisplay({
         </Typography>
 
 
-        
+
 
         <RadioGroup
           name={`question-${question.id}`}
@@ -84,7 +99,9 @@ export default function QuestionDisplay({
                 '&:hover': {
                   backgroundColor: 'action.hover',
                   borderRadius: 1
-                }
+                },
+                textAlign: 'left',
+                width: '100%'
               }}
             />
           ))}
