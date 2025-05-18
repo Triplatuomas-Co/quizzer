@@ -25,11 +25,11 @@ export default function QuestionCard({ quiz }: QuestionCardProps) {
         color="text.secondary" 
         sx={{ 
           textAlign: 'left',
-          whiteSpace: 'pre-wrap', // Added for line break support
-          lineHeight: 1.6,        // Optional: for better readability
-          wordBreak: 'break-word',  // Optional: for long words
-          overflowWrap: 'break-word', // Optional: for long words
-          mb: 1 // Optional: margin bottom for spacing
+          whiteSpace: 'pre-wrap',
+          lineHeight: 1.6,
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          mb: 1
         }}
       >
         {quiz.description}

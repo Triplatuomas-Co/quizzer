@@ -14,9 +14,22 @@ const QuestionResultStats: React.FC<QuestionResultStatsProps> = ({ question }) =
   const getDifficultyColor = (difficulty: number) => {
     switch (difficulty) {
       case 1: return '#4caf50'; // Easy - Green    
-      case 2: return '#ff9800'; // Medium - Orange
-      case 3: return '#f44336'; // Hard - Red
-      default: return '#4caf50'; // Default - Gray
+      case 2: return '#ffeb3b'; // Medium - Yellow/Amber (Material UI yellow[600] or amber[500])
+      case 3: return '#ff9800'; // Normal - Orange
+      case 4: return '#f44336'; // Hard - Red
+      case 5: return '#b71c1c'; // Very Hard - Dark Red (Material UI red[900])
+      default: return '#9e9e9e'; // Default - Gray (for unexpected values)
+    }
+  };
+
+  const getDifficultyText = (difficulty: number): string => {
+    switch (difficulty) {
+      case 1: return 'Easy';
+      case 2: return 'Medium';
+      case 3: return 'Normal';
+      case 4: return 'Hard';
+      case 5: return 'Very Hard';
+      default: return 'Unknown';
     }
   };
 
@@ -32,9 +45,9 @@ const QuestionResultStats: React.FC<QuestionResultStatsProps> = ({ question }) =
           py: 0.5,
           borderRadius: 1,
           bgcolor: getDifficultyColor(question.difficulty),
-          color: 'white'
+          color: question.difficulty === 2 ? 'black' : 'white' // Yellow might need black text
         }}>
-          {question.difficulty === 1 ? 'Easy' : question.difficulty === 2 ? 'Medium' : 'Hard'}
+          {getDifficultyText(question.difficulty)}
         </Box>
       </TableCell>
       <TableCell>
