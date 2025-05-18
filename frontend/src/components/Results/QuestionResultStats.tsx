@@ -14,10 +14,10 @@ const QuestionResultStats: React.FC<QuestionResultStatsProps> = ({ question }) =
   const getDifficultyColor = (difficulty: number) => {
     switch (difficulty) {
       case 1: return '#4caf50'; // Easy - Green    
-      case 2: return '#ffeb3b'; // Medium - Yellow/Amber (Material UI yellow[600] or amber[500])
+      case 2: return '#ffeb3b'; // Medium - Yellow
       case 3: return '#ff9800'; // Normal - Orange
       case 4: return '#f44336'; // Hard - Red
-      case 5: return '#b71c1c'; // Very Hard - Dark Red (Material UI red[900])
+      case 5: return '#b71c1c'; // Very Hard - Dark Red
       default: return '#9e9e9e'; // Default - Gray (for unexpected values)
     }
   };
