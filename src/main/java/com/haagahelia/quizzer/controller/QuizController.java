@@ -229,6 +229,7 @@ public class QuizController {
         // Set the quiz back-reference to the existing question
         existingQuestion.setTitle(question.getTitle());
         existingQuestion.setDescription(question.getDescription());
+        existingQuestion.setDifficulty(question.getDifficulty());
         existingQuestion.getOptions().clear();
 
         // Set the options for the existing question
