@@ -18,9 +18,13 @@ This project is developed as part of the "Introduction to software development p
 
 [Link](https://github.com/orgs/Triplatuomas-Co/projects/1/views/1)
 
-## Rahti-url
+## Live Backend (Rahti)
 
 [Link](https://quizzer-git-quizzer-postgres.2.rahtiapp.fi/)
+
+## Live Frontend (Netlify)
+
+[Link](https://quizzer-triplatuomas-co.netlify.app/)
 
 ## Flinga
 
